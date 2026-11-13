@@ -30,11 +30,12 @@ pnpm install
 ```
 apps/web          Next.js app: MapLibre map + UI
 packages/shared   Types and logic shared by the app and the data pipeline
-packages/ingest   Data pipeline (Phase 2)
-data/curated      Hand-maintained alliance / program / currency data (Phase 2)
+packages/ingest   Data pipeline CLI (SQLite via node:sqlite, cached downloads in data/cache)
+data/curated      Hand-maintained alliances, programs, bank currencies, airline aliases, route overrides
 ```
 
 ## Notes
 
 - MapLibre v6 loads its web worker relative to its own module, which breaks under the Next.js bundler. `apps/web/scripts/copy-maplibre-worker.mjs` copies the worker into `public/vendor/` before `dev` and `build`, and `WorldMap.tsx` points `setWorkerUrl` at it.
 - Basemap: [OpenFreeMap](https://openfreemap.org) (free, no API key).
+- Curated partner data is best-effort. Programs carry a `confidence` field and bank transfer partners a `verified` flag; check low-confidence or unverified entries on the program or bank site.

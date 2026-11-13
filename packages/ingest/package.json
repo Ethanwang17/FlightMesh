@@ -1,0 +1,21 @@
+{
+  "name": "@flightmesh/ingest",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "ingest": "./src/cli.ts"
+  },
+  "scripts": {
+    "ingest": "tsx --disable-warning=ExperimentalWarning src/cli.ts",
+    "lint": "eslint --config ../../eslint.config.mjs src",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@flightmesh/shared": "workspace:*",
+    "csv-parse": "^7.0.3",
+    "tsx": "^4.23.15",
+    "zod": "^4.6.7"
+  }
+}

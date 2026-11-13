@@ -12,7 +12,8 @@
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "ingest": "pnpm --filter @flightmesh/ingest ingest"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",

@@ -1,0 +1,195 @@
+{
+  "_comment": "Airline transfer partners only. ratio = miles per bank point. verified=false where public sources disagreed on 2026-11-13; confirm in the bank's app before transferring. Spirit removed 2026-11-13: Wikidata records Spirit Airlines as dissolved on 2026-05-02.",
+  "currencies": [
+    {
+      "id": "bilt",
+      "name": "Bilt Rewards",
+      "partners": [
+        {
+          "program": "aerclub",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "aeroplan",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "flyingblue",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "atmos",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "aadvantage",
+          "ratio": 1,
+          "verified": false,
+          "notes": "Sources conflict on whether AAdvantage is still a Bilt partner."
+        },
+        {
+          "program": "lifemiles",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "ba",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "asiamiles",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "skywards",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "etihadguest",
+          "ratio": 1,
+          "verified": false,
+          "notes": "Listed by some 2026 sources, missing from others."
+        },
+        {
+          "program": "iberia",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "jal",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "trueblue",
+          "ratio": 1,
+          "verified": false,
+          "notes": "Listed by some 2026 sources, missing from others."
+        },
+        {
+          "program": "qatar",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "southwest",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "tap",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "turkish",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "united",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "virginatlantic",
+          "ratio": 1,
+          "verified": true
+        }
+      ]
+    },
+    {
+      "id": "amex",
+      "name": "Amex Membership Rewards",
+      "partners": [
+        {
+          "program": "aerclub",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "aeromexico",
+          "ratio": 1.6,
+          "verified": true
+        },
+        {
+          "program": "aeroplan",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "flyingblue",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "ana",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "lifemiles",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "ba",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "asiamiles",
+          "ratio": 0.8,
+          "verified": true
+        },
+        {
+          "program": "delta",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "skywards",
+          "ratio": 0.8,
+          "verified": true
+        },
+        {
+          "program": "iberia",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "trueblue",
+          "ratio": 0.8,
+          "verified": true
+        },
+        {
+          "program": "qantas",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "qatar",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "krisflyer",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "virginatlantic",
+          "ratio": 1,
+          "verified": true
+        }
+      ]
+    }
+  ]
+}

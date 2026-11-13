@@ -51,13 +51,18 @@ export interface Program {
   allianceRule: AllianceId | null;
   extraPartners: AirlineCode[];
   excluded: AirlineCode[];
+  /** How sure the curated partner list is. "low" means check the program's own site. */
+  confidence: "high" | "medium" | "low";
   notes?: string;
 }
 
 export interface TransferPartner {
   program: ProgramId;
-  /** Points-to-miles ratio, e.g. 1 for 1:1. */
+  /** Miles received per bank point, e.g. 1 for 1:1, 0.8 for 5:4. */
   ratio: number;
+  /** False when public sources disagree on whether this partnership is current. */
+  verified: boolean;
+  notes?: string;
 }
 
 export interface Currency {

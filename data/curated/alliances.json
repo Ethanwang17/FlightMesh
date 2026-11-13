@@ -1,0 +1,89 @@
+{
+  "_comment": "Full members only (IATA codes). Affiliates/regional brands are mapped to their parent in airline_aliases.json. Last reviewed 2026-11-13; entries in 'verify' should be confirmed against the alliance sites.",
+  "alliances": [
+    {
+      "id": "star",
+      "name": "Star Alliance",
+      "members": [
+        "A3",
+        "AC",
+        "CA",
+        "AI",
+        "NZ",
+        "NH",
+        "OZ",
+        "OS",
+        "AV",
+        "SN",
+        "CM",
+        "OU",
+        "MS",
+        "ET",
+        "BR",
+        "AZ",
+        "LO",
+        "LH",
+        "ZH",
+        "SQ",
+        "SA",
+        "LX",
+        "TP",
+        "TG",
+        "TK",
+        "UA"
+      ],
+      "verify": [
+        "AZ joining after leaving SkyTeam in 2025",
+        "OZ leaving once merged into Korean Air"
+      ]
+    },
+    {
+      "id": "oneworld",
+      "name": "oneworld",
+      "members": [
+        "AS",
+        "AA",
+        "BA",
+        "CX",
+        "FJ",
+        "AY",
+        "HA",
+        "IB",
+        "JL",
+        "MH",
+        "WY",
+        "QF",
+        "QR",
+        "AT",
+        "RJ",
+        "UL"
+      ],
+      "verify": ["HA joined via the Alaska merger", "WY joined in 2025"]
+    },
+    {
+      "id": "skyteam",
+      "name": "SkyTeam",
+      "members": [
+        "AR",
+        "AM",
+        "UX",
+        "AF",
+        "CI",
+        "MU",
+        "DL",
+        "GA",
+        "KQ",
+        "KL",
+        "KE",
+        "ME",
+        "SV",
+        "SK",
+        "RO",
+        "VN",
+        "VS",
+        "MF"
+      ],
+      "verify": []
+    }
+  ]
+}

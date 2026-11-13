@@ -1,0 +1,224 @@
+{
+  "_comment": "Programs reachable from Bilt or Amex. 'Bookable' = owner + alliance members (allianceRule) + extraPartners - excluded. Partner lists beyond the alliance are best-effort and change often; confidence marks how sure the entry is.",
+  "programs": [
+    {
+      "id": "aerclub",
+      "name": "Aer Lingus AerClub",
+      "ownerAirline": "EI",
+      "allianceRule": null,
+      "extraPartners": ["BA", "IB", "VY", "QR"],
+      "excluded": [],
+      "confidence": "low",
+      "notes": "Avios program; partner award coverage is narrower than BA's."
+    },
+    {
+      "id": "aeroplan",
+      "name": "Air Canada Aeroplan",
+      "ownerAirline": "AC",
+      "allianceRule": "star",
+      "extraPartners": ["EY", "EK", "GF", "AD"],
+      "excluded": [],
+      "confidence": "medium"
+    },
+    {
+      "id": "flyingblue",
+      "name": "Air France-KLM Flying Blue",
+      "ownerAirline": "AF",
+      "allianceRule": "skyteam",
+      "extraPartners": ["KL", "G3", "MK", "PG"],
+      "excluded": [],
+      "confidence": "medium"
+    },
+    {
+      "id": "atmos",
+      "name": "Atmos Rewards (Alaska/Hawaiian)",
+      "ownerAirline": "AS",
+      "allianceRule": "oneworld",
+      "extraPartners": ["HA", "EI", "DE", "FI", "KE", "JX", "PD"],
+      "excluded": [],
+      "confidence": "low"
+    },
+    {
+      "id": "aadvantage",
+      "name": "American AAdvantage",
+      "ownerAirline": "AA",
+      "allianceRule": "oneworld",
+      "extraPartners": ["EI", "TN", "6E"],
+      "excluded": [],
+      "confidence": "medium"
+    },
+    {
+      "id": "lifemiles",
+      "name": "Avianca LifeMiles",
+      "ownerAirline": "AV",
+      "allianceRule": "star",
+      "extraPartners": [],
+      "excluded": [],
+      "confidence": "medium"
+    },
+    {
+      "id": "ba",
+      "name": "British Airways Club",
+      "ownerAirline": "BA",
+      "allianceRule": "oneworld",
+      "extraPartners": ["EI", "VY"],
+      "excluded": [],
+      "confidence": "medium"
+    },
+    {
+      "id": "asiamiles",
+      "name": "Cathay Pacific Asia Miles",
+      "ownerAirline": "CX",
+      "allianceRule": "oneworld",
+      "extraPartners": ["AC"],
+      "excluded": [],
+      "confidence": "low"
+    },
+    {
+      "id": "skywards",
+      "name": "Emirates Skywards",
+      "ownerAirline": "EK",
+      "allianceRule": null,
+      "extraPartners": ["FZ", "QF", "UA", "B6"],
+      "excluded": [],
+      "confidence": "low"
+    },
+    {
+      "id": "etihadguest",
+      "name": "Etihad Guest",
+      "ownerAirline": "EY",
+      "allianceRule": null,
+      "extraPartners": ["AA", "UX", "GA", "VN"],
+      "excluded": [],
+      "confidence": "low"
+    },
+    {
+      "id": "iberia",
+      "name": "Iberia Club",
+      "ownerAirline": "IB",
+      "allianceRule": "oneworld",
+      "extraPartners": ["EI", "VY"],
+      "excluded": [],
+      "confidence": "medium"
+    },
+    {
+      "id": "jal",
+      "name": "JAL Mileage Bank",
+      "ownerAirline": "JL",
+      "allianceRule": "oneworld",
+      "extraPartners": ["EK", "AF", "MU"],
+      "excluded": [],
+      "confidence": "low"
+    },
+    {
+      "id": "trueblue",
+      "name": "JetBlue TrueBlue",
+      "ownerAirline": "B6",
+      "allianceRule": null,
+      "extraPartners": ["UA"],
+      "excluded": [],
+      "confidence": "low",
+      "notes": "UA via the Blue Sky partnership."
+    },
+    {
+      "id": "qatar",
+      "name": "Qatar Airways Privilege Club",
+      "ownerAirline": "QR",
+      "allianceRule": "oneworld",
+      "extraPartners": ["VA", "WB"],
+      "excluded": [],
+      "confidence": "medium"
+    },
+    {
+      "id": "southwest",
+      "name": "Southwest Rapid Rewards",
+      "ownerAirline": "WN",
+      "allianceRule": null,
+      "extraPartners": [],
+      "excluded": [],
+      "confidence": "high"
+    },
+    {
+      "id": "tap",
+      "name": "TAP Miles&Go",
+      "ownerAirline": "TP",
+      "allianceRule": "star",
+      "extraPartners": [],
+      "excluded": [],
+      "confidence": "medium"
+    },
+    {
+      "id": "turkish",
+      "name": "Turkish Airlines Miles&Smiles",
+      "ownerAirline": "TK",
+      "allianceRule": "star",
+      "extraPartners": [],
+      "excluded": [],
+      "confidence": "medium"
+    },
+    {
+      "id": "united",
+      "name": "United MileagePlus",
+      "ownerAirline": "UA",
+      "allianceRule": "star",
+      "extraPartners": ["EI", "AD", "WK", "EN"],
+      "excluded": [],
+      "confidence": "medium"
+    },
+    {
+      "id": "virginatlantic",
+      "name": "Virgin Atlantic Flying Club",
+      "ownerAirline": "VS",
+      "allianceRule": "skyteam",
+      "extraPartners": ["NH", "NZ", "SQ", "SA"],
+      "excluded": [],
+      "confidence": "low",
+      "notes": "Not every SkyTeam member is bookable; add exclusions as found."
+    },
+    {
+      "id": "aeromexico",
+      "name": "Aeroméxico Rewards",
+      "ownerAirline": "AM",
+      "allianceRule": "skyteam",
+      "extraPartners": [],
+      "excluded": [],
+      "confidence": "medium"
+    },
+    {
+      "id": "ana",
+      "name": "ANA Mileage Club",
+      "ownerAirline": "NH",
+      "allianceRule": "star",
+      "extraPartners": ["EY", "VS"],
+      "excluded": [],
+      "confidence": "medium"
+    },
+    {
+      "id": "delta",
+      "name": "Delta SkyMiles",
+      "ownerAirline": "DL",
+      "allianceRule": "skyteam",
+      "extraPartners": ["LA", "WS", "VA"],
+      "excluded": [],
+      "confidence": "medium"
+    },
+    {
+      "id": "qantas",
+      "name": "Qantas Frequent Flyer",
+      "ownerAirline": "QF",
+      "allianceRule": "oneworld",
+      "extraPartners": ["EK", "JQ"],
+      "excluded": [],
+      "confidence": "medium"
+    },
+    {
+      "id": "krisflyer",
+      "name": "Singapore KrisFlyer",
+      "ownerAirline": "SQ",
+      "allianceRule": "star",
+      "extraPartners": ["TR", "AS", "VA"],
+      "excluded": [],
+      "confidence": "low"
+    }
+  ]
+}

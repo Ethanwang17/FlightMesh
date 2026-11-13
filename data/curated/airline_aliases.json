@@ -1,0 +1,21 @@
+{
+  "_comment": "Wikipedia airline link title -> IATA code it should count under. Used in Phase 3 for regional brands and subsidiaries that Wikidata doesn't map to the marketing carrier.",
+  "aliases": {
+    "American Eagle (airline brand)": "AA",
+    "Delta Connection": "DL",
+    "United Express": "UA",
+    "Alaska Horizon": "AS",
+    "Horizon Air": "AS",
+    "KLM Cityhopper": "KL",
+    "HOP!": "AF",
+    "Air Canada Express": "AC",
+    "Air Canada Rouge": "AC",
+    "Lufthansa CityLine": "LH",
+    "BA CityFlyer": "BA",
+    "Iberia Regional": "IB",
+    "Aeroméxico Connect": "AM",
+    "Qantas Link": "QF",
+    "QantasLink": "QF",
+    "Air New Zealand Link": "NZ"
+  }
+}
