@@ -1,0 +1,9 @@
+pnpm-lock.yaml
+.next
+node_modules
+dist
+data/cache
+data/*.db
+apps/web/public/data
+next-env.d.ts
+apps/web/public/vendor

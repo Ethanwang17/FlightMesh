@@ -1,0 +1,19 @@
+node_modules/
+.next/
+out/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+.env*
+!.env.example
+.DS_Store
+
+# Data pipeline outputs
+data/cache/
+data/reports/
+data/*.db
+data/*.db-*
+apps/web/public/data/
+
+# Copied from node_modules at dev/build time
+apps/web/public/vendor/

@@ -1,0 +1,14 @@
+{
+  "name": "@flightmesh/shared",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint --config ../../eslint.config.mjs src",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "vitest run"
+  }
+}
