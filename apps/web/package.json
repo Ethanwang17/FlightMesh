@@ -12,9 +12,18 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@deck.gl/core": "~9.4.1",
+    "@deck.gl/layers": "~9.4.1",
+    "@deck.gl/mapbox": "~9.4.1",
     "@flightmesh/shared": "workspace:*",
+    "@loaders.gl/core": "^4.5.4",
+    "@luma.gl/core": "~9.4.2",
+    "@luma.gl/engine": "~9.4.2",
+    "@math.gl/web-mercator": "^4.1.0",
+    "fuse.js": "^7.5.0",
     "maplibre-gl": "^6.18.0",
     "next": "16.4.6",
+    "nuqs": "^2.10.3",
     "react": "19.3.1",
     "react-dom": "19.3.1"
   },

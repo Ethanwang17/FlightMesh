@@ -2,7 +2,13 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { DatabaseSync } from "node:sqlite";
 import { z } from "zod";
-import type { Alliance, AllianceId, Currency, Program } from "@flightmesh/shared";
+import {
+  daysSince,
+  type Alliance,
+  type AllianceId,
+  type Currency,
+  type Program,
+} from "@flightmesh/shared";
 import { paths } from "./paths";
 
 const airlineCode = z.string().regex(/^[A-Z0-9]{2}$/, "expected a 2-character IATA airline code");
@@ -19,16 +25,27 @@ const AlliancesFile = z.object({
   ),
 });
 
+const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "expected yyyy-mm-dd");
+
 const ProgramsFile = z.object({
   programs: z.array(
     z.object({
       id: z.string().regex(/^[a-z0-9]+$/),
       name: z.string(),
       ownerAirline: airlineCode,
-      allianceRule: allianceId.nullable(),
-      extraPartners: z.array(airlineCode),
-      excluded: z.array(airlineCode),
+      alliance: z.object({ id: allianceId, excludeMembers: z.array(airlineCode) }).nullable(),
+      partners: z.array(
+        z.object({
+          airline: airlineCode,
+          redeem: z.boolean(),
+          earn: z.boolean(),
+          scope: z.literal("operated-only").optional(),
+          notes: z.string().optional(),
+        }),
+      ),
       confidence: z.enum(["high", "medium", "low"]),
+      sourceUrl: z.string().url().nullable(),
+      checkedAt: isoDate,
       notes: z.string().optional(),
     }),
   ),
@@ -47,11 +64,58 @@ const CurrenciesFile = z.object({
           notes: z.string().optional(),
         }),
       ),
+      sourceUrl: z.string().url().nullable(),
+      checkedAt: isoDate,
     }),
   ),
 });
 
 const AliasesFile = z.object({ aliases: z.record(z.string(), airlineCode) });
+
+const airportCode = z.string().regex(/^[A-Z]{3}$/, "expected a 3-letter IATA airport code");
+/** Every override says why and where that came from. */
+const why = { reason: z.string().min(3), source: z.string().min(3) };
+
+const OverridesFile = z.object({
+  add: z.array(
+    z.object({
+      origin: airportCode,
+      dest: airportCode,
+      airline: airlineCode,
+      seasonal: z.boolean().optional(),
+      bothWays: z.boolean().optional(),
+      ...why,
+    }),
+  ),
+  remove: z.array(
+    z.object({
+      origin: airportCode,
+      dest: airportCode,
+      airline: airlineCode.optional(),
+      bothWays: z.boolean().optional(),
+      ...why,
+    }),
+  ),
+  /** An airline not flying at an airport or in a country, until a date (or until removed). */
+  suspended: z.array(
+    z.object({
+      airline: airlineCode,
+      airport: airportCode.optional(),
+      country: z.string().length(2).optional(),
+      until: isoDate.optional(),
+      ...why,
+    }),
+  ),
+  /** Listings naming the old airport count for the new one. */
+  movedAirports: z.array(z.object({ from: airportCode, to: airportCode, ...why })),
+  closedAirports: z.array(z.object({ iata: airportCode, until: isoDate.optional(), ...why })),
+});
+
+export type OverridesData = z.infer<typeof OverridesFile>;
+
+export function loadOverrides(): OverridesData {
+  return readJson(OverridesFile, "overrides.json");
+}
 
 export interface CuratedData {
   alliances: Alliance[];
@@ -82,6 +146,9 @@ export function loadCurated(): CuratedData {
   };
 }
 
+/** A partner list not re-checked for this long gets a warning. */
+export const STALE_AFTER_DAYS = 120;
+
 export interface ValidationReport {
   /** Broken references that make the data wrong. */
   errors: string[];
@@ -93,6 +160,7 @@ export interface ValidationReport {
 export function validateCurated(
   data: CuratedData,
   knownAirlines: ReadonlySet<string>,
+  today: Date = new Date(),
 ): ValidationReport {
   const errors: string[] = [];
   const warnings: string[] = [];
@@ -115,14 +183,36 @@ export function validateCurated(
   for (const p of data.programs) {
     if (programIds.has(p.id)) errors.push(`duplicate program id ${p.id}`);
     programIds.add(p.id);
-    if (p.allianceRule && !alliances.has(p.allianceRule)) {
-      errors.push(`program ${p.id}: unknown alliance ${p.allianceRule}`);
+    if (p.alliance && !alliances.has(p.alliance.id)) {
+      errors.push(`program ${p.id}: unknown alliance ${p.alliance.id}`);
     }
-    for (const code of [p.ownerAirline, ...p.extraPartners, ...p.excluded])
+    for (const code of p.alliance?.excludeMembers ?? []) {
+      if (!alliances.get(p.alliance!.id)?.members.includes(code))
+        warnings.push(`program ${p.id}: excluded ${code} is not a ${p.alliance!.id} member`);
+    }
+    const seen = new Set<string>();
+    for (const partner of p.partners) {
+      if (seen.has(partner.airline))
+        errors.push(`program ${p.id}: partner ${partner.airline} listed twice`);
+      seen.add(partner.airline);
+    }
+    for (const code of [p.ownerAirline, ...p.partners.map((x) => x.airline)])
       unknown(code, `program ${p.id}`);
+    const age = daysSince(p.checkedAt, today);
+    if (age > STALE_AFTER_DAYS)
+      warnings.push(`program ${p.id}: partner list last checked ${p.checkedAt} (${age} days ago)`);
   }
 
   for (const c of data.currencies) {
+    const age = daysSince(c.checkedAt, today);
+    if (age > STALE_AFTER_DAYS)
+      warnings.push(
+        `currency ${c.id}: transfer partners last checked ${c.checkedAt} (${age} days ago)`,
+      );
+    for (const p of c.partners.filter((x) => !x.verified))
+      warnings.push(
+        `currency ${c.id}: ${p.program} is unverified${p.notes ? ` (${p.notes})` : ""}`,
+      );
     const seen = new Set<string>();
     for (const partner of c.partners) {
       if (!programIds.has(partner.program))
@@ -140,6 +230,8 @@ export function validateCurated(
 
 export function knownAirlineCodes(db: DatabaseSync): Set<string> {
   return new Set(
-    (db.prepare("SELECT iata FROM airlines").all() as { iata: string }[]).map((r) => r.iata),
+    (
+      db.prepare("SELECT iata FROM airlines WHERE iata IS NOT NULL").all() as { iata: string }[]
+    ).map((r) => r.iata),
   );
 }

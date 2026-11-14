@@ -1,0 +1,49 @@
+{
+  "_comment": "Manual corrections applied after Wikipedia parsing; they beat every other source. Each rule needs a reason and a source (a URL or a dated note). 'until' dates (yyyy-mm-dd) make a rule lapse by itself. See docs/PLAN.md 'Conflict resolution'.",
+  "add": [],
+  "remove": [],
+  "suspended": [],
+  "movedAirports": [],
+  "closedAirports": [
+    {
+      "iata": "EGO",
+      "reason": "Belgorod: closed to civil flights since February 2022 (southern Russia airspace restrictions)",
+      "source": "Closed since 2022-02-24 and not reopened, per the closed-airports list in https://github.com/tjaffee99/flights#readme (checked 2026-11-14); FlightMesh's publish check flagged ROV when its stale Wikipedia table appeared"
+    },
+    {
+      "iata": "VOZ",
+      "reason": "Voronezh: closed to civil flights since February 2022 (southern Russia airspace restrictions)",
+      "source": "Closed since 2022-02-24 and not reopened, per the closed-airports list in https://github.com/tjaffee99/flights#readme (checked 2026-11-14); FlightMesh's publish check flagged ROV when its stale Wikipedia table appeared"
+    },
+    {
+      "iata": "URS",
+      "reason": "Kursk: closed to civil flights since February 2022 (southern Russia airspace restrictions)",
+      "source": "Closed since 2022-02-24 and not reopened, per the closed-airports list in https://github.com/tjaffee99/flights#readme (checked 2026-11-14); FlightMesh's publish check flagged ROV when its stale Wikipedia table appeared"
+    },
+    {
+      "iata": "ROV",
+      "reason": "Rostov-on-Don (Platov): closed to civil flights since February 2022 (southern Russia airspace restrictions)",
+      "source": "Closed since 2022-02-24 and not reopened, per the closed-airports list in https://github.com/tjaffee99/flights#readme (checked 2026-11-14); FlightMesh's publish check flagged ROV when its stale Wikipedia table appeared"
+    },
+    {
+      "iata": "AAQ",
+      "reason": "Anapa: closed to civil flights since February 2022 (southern Russia airspace restrictions)",
+      "source": "Closed since 2022-02-24 and not reopened, per the closed-airports list in https://github.com/tjaffee99/flights#readme (checked 2026-11-14); FlightMesh's publish check flagged ROV when its stale Wikipedia table appeared"
+    },
+    {
+      "iata": "BZK",
+      "reason": "Bryansk: closed to civil flights since February 2022 (southern Russia airspace restrictions)",
+      "source": "Closed since 2022-02-24 and not reopened, per the closed-airports list in https://github.com/tjaffee99/flights#readme (checked 2026-11-14); FlightMesh's publish check flagged ROV when its stale Wikipedia table appeared"
+    },
+    {
+      "iata": "LPK",
+      "reason": "Lipetsk: closed to civil flights since February 2022 (southern Russia airspace restrictions)",
+      "source": "Closed since 2022-02-24 and not reopened, per the closed-airports list in https://github.com/tjaffee99/flights#readme (checked 2026-11-14); FlightMesh's publish check flagged ROV when its stale Wikipedia table appeared"
+    },
+    {
+      "iata": "SIP",
+      "reason": "Simferopol: closed to civil flights since February 2022 (southern Russia airspace restrictions)",
+      "source": "Closed since 2022-02-24 and not reopened, per the closed-airports list in https://github.com/tjaffee99/flights#readme (checked 2026-11-14); FlightMesh's publish check flagged ROV when its stale Wikipedia table appeared"
+    }
+  ]
+}

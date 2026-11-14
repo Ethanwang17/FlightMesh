@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { parseAirlineBindings, parseAirportBindings, pickCanonicalAirlines } from "./wikidata";
+import {
+  chooseAirportTitles,
+  dissolvedAirlineTitles,
+  parseAirlineBindings,
+  parseAirportBindings,
+  pickCanonicalAirlines,
+  type WikidataAirport,
+} from "./wikidata";
 
 const v = (value: string) => ({ value });
 const entity = (q: string) => v(`http://www.wikidata.org/entity/${q}`);
@@ -12,7 +19,7 @@ describe("parseAirportBindings", () => {
       { item: entity("Q1"), iata: v("XX"), article: wiki("Bad") },
       { item: entity("Q2"), iata: v("ABC") },
     ]);
-    expect(out).toEqual([{ qid: "Q46033", iata: "FRA", title: "Frankfurt Airport" }]);
+    expect(out).toEqual([{ qid: "Q46033", iata: "FRA", icao: null, title: "Frankfurt Airport" }]);
   });
 });
 
@@ -74,5 +81,74 @@ describe("airline parsing", () => {
   it("picks the most-linked active airline per code", () => {
     expect(canonical.get("KL")?.name).toBe("KLM");
     expect(canonical.get("L3")?.name).toBe("Current L3");
+  });
+});
+
+describe("chooseAirportTitles", () => {
+  const wd = (qid: string, iata: string, icao: string | null, title: string): WikidataAirport => ({
+    qid,
+    iata,
+    icao,
+    title,
+  });
+
+  it("keeps OurAirports' title when Wikidata agrees, and maps every agreeing title", () => {
+    const c = chooseAirportTitles(
+      [{ iata: "SEA", icao: "KSEA", title: "Seattle–Tacoma International Airport" }],
+      [wd("Q1", "SEA", "KSEA", "Seattle–Tacoma International Airport")],
+    );
+    expect(c.pageTitle.get("SEA")).toEqual({
+      title: "Seattle–Tacoma International Airport",
+      qid: "Q1",
+    });
+  });
+
+  it("prefers the Wikidata item whose ICAO matches when OurAirports links a redirect", () => {
+    const c = chooseAirportTitles(
+      [{ iata: "LIH", icao: "PHLI", title: "Lihu'e Airport" }],
+      [wd("Q2", "LIH", "PHLI", "Lihue Airport")],
+    );
+    expect(c.pageTitle.get("LIH")?.title).toBe("Lihue Airport");
+    expect(c.titles.get("Lihue Airport")).toBe("LIH");
+    expect(c.titles.get("Lihu'e Airport")).toBe("LIH");
+  });
+
+  it("rejects a Wikidata item whose ICAO disagrees, and military fields sharing the code", () => {
+    const c = chooseAirportTitles(
+      [{ iata: "LSE", icao: "KLSE", title: "La Crosse Regional Airport" }],
+      [
+        wd("Q3", "LSE", "WAXX", "Some Indonesian Airstrip"),
+        wd("Q4", "LSE", null, "La Crosse Air Force Base"),
+      ],
+    );
+    expect(c.pageTitle.get("LSE")?.title).toBe("La Crosse Regional Airport");
+    expect(c.titles.has("Some Indonesian Airstrip")).toBe(false);
+    expect(c.titles.has("La Crosse Air Force Base")).toBe(false);
+  });
+
+  it("drops titles claimed by two airports from link resolution", () => {
+    const c = chooseAirportTitles(
+      [
+        { iata: "AAA", icao: null, title: "Shared Airport" },
+        { iata: "BBB", icao: null, title: "Shared Airport" },
+      ],
+      [],
+    );
+    expect(c.titles.has("Shared Airport")).toBe(false);
+  });
+});
+
+describe("dissolvedAirlineTitles", () => {
+  it("lists articles of dissolved airlines", () => {
+    expect([
+      ...dissolvedAirlineTitles([
+        {
+          item: entity("Q1"),
+          article: wiki("Spirit_Airlines"),
+          dissolved: v("2026-05-02T00:00:00Z"),
+        },
+        { item: entity("Q2"), article: wiki("KLM") },
+      ]),
+    ]).toEqual(["Spirit Airlines"]);
   });
 });

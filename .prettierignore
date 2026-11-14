@@ -7,3 +7,6 @@ data/*.db
 apps/web/public/data
 next-env.d.ts
 apps/web/public/vendor
+packages/ingest/test/fixtures
+data/snapshots
+data/backups

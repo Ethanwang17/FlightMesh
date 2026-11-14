@@ -1,224 +1,615 @@
 {
-  "_comment": "Programs reachable from Bilt or Amex. 'Bookable' = owner + alliance members (allianceRule) + extraPartners - excluded. Partner lists beyond the alliance are best-effort and change often; confidence marks how sure the entry is.",
+  "_comment": "Programs reachable from Bilt or Amex. Potentially bookable = owner + alliance members - excludeMembers + partners with redeem=true; partners with redeem=false are earn-only and never count. scope 'operated-only' limits a partner to flights it operates itself. checkedAt older than 120 days triggers a validation warning.",
   "programs": [
     {
       "id": "aerclub",
       "name": "Aer Lingus AerClub",
       "ownerAirline": "EI",
-      "allianceRule": null,
-      "extraPartners": ["BA", "IB", "VY", "QR"],
-      "excluded": [],
+      "alliance": null,
+      "partners": [
+        {
+          "airline": "BA",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "IB",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "VY",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "QR",
+          "redeem": true,
+          "earn": true
+        }
+      ],
       "confidence": "low",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13",
       "notes": "Avios program; partner award coverage is narrower than BA's."
     },
     {
       "id": "aeroplan",
       "name": "Air Canada Aeroplan",
       "ownerAirline": "AC",
-      "allianceRule": "star",
-      "extraPartners": ["EY", "EK", "GF", "AD"],
-      "excluded": [],
-      "confidence": "medium"
+      "alliance": {
+        "id": "star",
+        "excludeMembers": []
+      },
+      "partners": [
+        {
+          "airline": "EY",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "EK",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "GF",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "AD",
+          "redeem": true,
+          "earn": true
+        }
+      ],
+      "confidence": "medium",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "flyingblue",
       "name": "Air France-KLM Flying Blue",
       "ownerAirline": "AF",
-      "allianceRule": "skyteam",
-      "extraPartners": ["KL", "G3", "MK", "PG"],
-      "excluded": [],
-      "confidence": "medium"
+      "alliance": {
+        "id": "skyteam",
+        "excludeMembers": []
+      },
+      "partners": [
+        {
+          "airline": "KL",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "G3",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "MK",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "PG",
+          "redeem": true,
+          "earn": true
+        }
+      ],
+      "confidence": "medium",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "atmos",
       "name": "Atmos Rewards (Alaska/Hawaiian)",
       "ownerAirline": "AS",
-      "allianceRule": "oneworld",
-      "extraPartners": ["HA", "EI", "DE", "FI", "KE", "JX", "PD"],
-      "excluded": [],
-      "confidence": "low"
-    },
-    {
-      "id": "aadvantage",
-      "name": "American AAdvantage",
-      "ownerAirline": "AA",
-      "allianceRule": "oneworld",
-      "extraPartners": ["EI", "TN", "6E"],
-      "excluded": [],
-      "confidence": "medium"
+      "alliance": {
+        "id": "oneworld",
+        "excludeMembers": []
+      },
+      "partners": [
+        {
+          "airline": "HA",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "EI",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "DE",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "FI",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "KE",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "JX",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "PD",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "HU",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "PR",
+          "redeem": false,
+          "earn": true,
+          "notes": "Earn-only since January 2026 (third-party report, unverified)."
+        },
+        {
+          "airline": "AZ",
+          "redeem": false,
+          "earn": true,
+          "notes": "Earn-only partner (third-party report, unverified)."
+        }
+      ],
+      "confidence": "low",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13",
+      "notes": "Singapore Airlines and LATAM are no longer partners (third-party reports)."
     },
     {
       "id": "lifemiles",
       "name": "Avianca LifeMiles",
       "ownerAirline": "AV",
-      "allianceRule": "star",
-      "extraPartners": [],
-      "excluded": [],
-      "confidence": "medium"
+      "alliance": {
+        "id": "star",
+        "excludeMembers": []
+      },
+      "partners": [],
+      "confidence": "medium",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "ba",
       "name": "British Airways Club",
       "ownerAirline": "BA",
-      "allianceRule": "oneworld",
-      "extraPartners": ["EI", "VY"],
-      "excluded": [],
-      "confidence": "medium"
+      "alliance": {
+        "id": "oneworld",
+        "excludeMembers": []
+      },
+      "partners": [
+        {
+          "airline": "EI",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "VY",
+          "redeem": true,
+          "earn": true
+        }
+      ],
+      "confidence": "medium",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "asiamiles",
       "name": "Cathay Pacific Asia Miles",
       "ownerAirline": "CX",
-      "allianceRule": "oneworld",
-      "extraPartners": ["AC"],
-      "excluded": [],
-      "confidence": "low"
+      "alliance": {
+        "id": "oneworld",
+        "excludeMembers": []
+      },
+      "partners": [
+        {
+          "airline": "AC",
+          "redeem": true,
+          "earn": true
+        }
+      ],
+      "confidence": "low",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "skywards",
       "name": "Emirates Skywards",
       "ownerAirline": "EK",
-      "allianceRule": null,
-      "extraPartners": ["FZ", "QF", "UA", "B6"],
-      "excluded": [],
-      "confidence": "low"
+      "alliance": null,
+      "partners": [
+        {
+          "airline": "FZ",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "QF",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "UA",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "B6",
+          "redeem": true,
+          "earn": true
+        }
+      ],
+      "confidence": "low",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "etihadguest",
       "name": "Etihad Guest",
       "ownerAirline": "EY",
-      "allianceRule": null,
-      "extraPartners": ["AA", "UX", "GA", "VN"],
-      "excluded": [],
-      "confidence": "low"
+      "alliance": null,
+      "partners": [
+        {
+          "airline": "AA",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "UX",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "GA",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "VN",
+          "redeem": true,
+          "earn": true
+        }
+      ],
+      "confidence": "low",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "iberia",
       "name": "Iberia Club",
       "ownerAirline": "IB",
-      "allianceRule": "oneworld",
-      "extraPartners": ["EI", "VY"],
-      "excluded": [],
-      "confidence": "medium"
+      "alliance": {
+        "id": "oneworld",
+        "excludeMembers": []
+      },
+      "partners": [
+        {
+          "airline": "EI",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "VY",
+          "redeem": true,
+          "earn": true
+        }
+      ],
+      "confidence": "medium",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "jal",
       "name": "JAL Mileage Bank",
       "ownerAirline": "JL",
-      "allianceRule": "oneworld",
-      "extraPartners": ["EK", "AF", "MU"],
-      "excluded": [],
-      "confidence": "low"
+      "alliance": {
+        "id": "oneworld",
+        "excludeMembers": []
+      },
+      "partners": [
+        {
+          "airline": "EK",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "AF",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "MU",
+          "redeem": true,
+          "earn": true
+        }
+      ],
+      "confidence": "low",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "trueblue",
       "name": "JetBlue TrueBlue",
       "ownerAirline": "B6",
-      "allianceRule": null,
-      "extraPartners": ["UA"],
-      "excluded": [],
+      "alliance": null,
+      "partners": [
+        {
+          "airline": "UA",
+          "redeem": true,
+          "earn": true
+        }
+      ],
       "confidence": "low",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13",
       "notes": "UA via the Blue Sky partnership."
     },
     {
       "id": "qatar",
       "name": "Qatar Airways Privilege Club",
       "ownerAirline": "QR",
-      "allianceRule": "oneworld",
-      "extraPartners": ["VA", "WB"],
-      "excluded": [],
-      "confidence": "medium"
+      "alliance": {
+        "id": "oneworld",
+        "excludeMembers": []
+      },
+      "partners": [
+        {
+          "airline": "VA",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "WB",
+          "redeem": true,
+          "earn": true
+        }
+      ],
+      "confidence": "medium",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "southwest",
       "name": "Southwest Rapid Rewards",
       "ownerAirline": "WN",
-      "allianceRule": null,
-      "extraPartners": [],
-      "excluded": [],
-      "confidence": "high"
+      "alliance": null,
+      "partners": [],
+      "confidence": "high",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "tap",
       "name": "TAP Miles&Go",
       "ownerAirline": "TP",
-      "allianceRule": "star",
-      "extraPartners": [],
-      "excluded": [],
-      "confidence": "medium"
+      "alliance": {
+        "id": "star",
+        "excludeMembers": []
+      },
+      "partners": [],
+      "confidence": "medium",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "turkish",
       "name": "Turkish Airlines Miles&Smiles",
       "ownerAirline": "TK",
-      "allianceRule": "star",
-      "extraPartners": [],
-      "excluded": [],
-      "confidence": "medium"
+      "alliance": {
+        "id": "star",
+        "excludeMembers": []
+      },
+      "partners": [],
+      "confidence": "medium",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "united",
       "name": "United MileagePlus",
       "ownerAirline": "UA",
-      "allianceRule": "star",
-      "extraPartners": ["EI", "AD", "WK", "EN"],
-      "excluded": [],
-      "confidence": "medium"
+      "alliance": {
+        "id": "star",
+        "excludeMembers": []
+      },
+      "partners": [
+        {
+          "airline": "EI",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "AD",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "WK",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "EN",
+          "redeem": true,
+          "earn": true
+        }
+      ],
+      "confidence": "medium",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "virginatlantic",
       "name": "Virgin Atlantic Flying Club",
       "ownerAirline": "VS",
-      "allianceRule": "skyteam",
-      "extraPartners": ["NH", "NZ", "SQ", "SA"],
-      "excluded": [],
+      "alliance": {
+        "id": "skyteam",
+        "excludeMembers": ["MU"]
+      },
+      "partners": [
+        {
+          "airline": "NH",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "NZ",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "SQ",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "SA",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "UX",
+          "redeem": true,
+          "earn": true,
+          "scope": "operated-only",
+          "notes": "\"Redemptions can only be made on Air Europa operated flights.\""
+        }
+      ],
       "confidence": "low",
-      "notes": "Not every SkyTeam member is bookable; add exclusions as found."
+      "sourceUrl": "https://flywith.virginatlantic.com/gb/en/flying-club/airline-partners/skyteam/air-europa.html",
+      "checkedAt": "2026-11-13",
+      "notes": "China Eastern awards historically unavailable (unverified for 2026). Not every SkyTeam member may be bookable."
     },
     {
       "id": "aeromexico",
       "name": "Aeroméxico Rewards",
       "ownerAirline": "AM",
-      "allianceRule": "skyteam",
-      "extraPartners": [],
-      "excluded": [],
-      "confidence": "medium"
+      "alliance": {
+        "id": "skyteam",
+        "excludeMembers": []
+      },
+      "partners": [],
+      "confidence": "medium",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "ana",
       "name": "ANA Mileage Club",
       "ownerAirline": "NH",
-      "allianceRule": "star",
-      "extraPartners": ["EY", "VS"],
-      "excluded": [],
-      "confidence": "medium"
+      "alliance": {
+        "id": "star",
+        "excludeMembers": []
+      },
+      "partners": [
+        {
+          "airline": "EY",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "VS",
+          "redeem": true,
+          "earn": true
+        }
+      ],
+      "confidence": "medium",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "delta",
       "name": "Delta SkyMiles",
       "ownerAirline": "DL",
-      "allianceRule": "skyteam",
-      "extraPartners": ["LA", "WS", "VA"],
-      "excluded": [],
-      "confidence": "medium"
+      "alliance": {
+        "id": "skyteam",
+        "excludeMembers": []
+      },
+      "partners": [
+        {
+          "airline": "LA",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "WS",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "VA",
+          "redeem": true,
+          "earn": true
+        }
+      ],
+      "confidence": "medium",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "qantas",
       "name": "Qantas Frequent Flyer",
       "ownerAirline": "QF",
-      "allianceRule": "oneworld",
-      "extraPartners": ["EK", "JQ"],
-      "excluded": [],
-      "confidence": "medium"
+      "alliance": {
+        "id": "oneworld",
+        "excludeMembers": []
+      },
+      "partners": [
+        {
+          "airline": "EK",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "JQ",
+          "redeem": true,
+          "earn": true
+        }
+      ],
+      "confidence": "medium",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     },
     {
       "id": "krisflyer",
       "name": "Singapore KrisFlyer",
       "ownerAirline": "SQ",
-      "allianceRule": "star",
-      "extraPartners": ["TR", "AS", "VA"],
-      "excluded": [],
-      "confidence": "low"
+      "alliance": {
+        "id": "star",
+        "excludeMembers": []
+      },
+      "partners": [
+        {
+          "airline": "TR",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "AS",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "VA",
+          "redeem": true,
+          "earn": true
+        }
+      ],
+      "confidence": "low",
+      "sourceUrl": null,
+      "checkedAt": "2026-11-13"
     }
   ]
 }

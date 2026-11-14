@@ -7,19 +7,24 @@ describe("curated data files", () => {
     const allCodes = new Set<string>();
     for (const a of data.alliances) a.members.forEach((c) => allCodes.add(c));
     for (const p of data.programs)
-      [p.ownerAirline, ...p.extraPartners].forEach((c) => allCodes.add(c));
+      [p.ownerAirline, ...p.partners.map((x) => x.airline)].forEach((c) => allCodes.add(c));
     Object.values(data.aliases).forEach((c) => allCodes.add(c));
 
     // With every code "known", only structural errors remain.
-    const report = validateCurated(data, allCodes);
+    const report = validateCurated(data, allCodes, new Date("2026-11-14T00:00:00Z"));
     expect(report.errors).toEqual([]);
     expect(report.warnings).toEqual([]);
   });
 
-  it("every Amex and Bilt partner resolves to a program", () => {
+  it("Bilt no longer lists AAdvantage or Spirit, and every partner resolves to a program", () => {
     const data = loadCurated();
     const ids = new Set(data.programs.map((p) => p.id));
     for (const c of data.currencies) for (const p of c.partners) expect(ids).toContain(p.program);
+    const bilt = data.currencies.find((c) => c.id === "bilt")!.partners.map((p) => p.program);
+    expect(bilt).not.toContain("aadvantage");
+    expect(bilt).not.toContain("spirit");
+    expect(bilt).toHaveLength(18);
+    expect(data.currencies.find((c) => c.id === "amex")!.partners).toHaveLength(16);
   });
 });
 
@@ -34,22 +39,36 @@ describe("validateCurated", () => {
         id: "united",
         name: "United",
         ownerAirline: "UA",
-        allianceRule: "star",
-        extraPartners: ["ZZ"],
-        excluded: [],
+        alliance: { id: "star", excludeMembers: [] },
+        partners: [{ airline: "ZZ", redeem: true, earn: true }],
         confidence: "high",
+        sourceUrl: null,
+        checkedAt: "2026-01-01",
       },
     ],
     currencies: [
-      { id: "bilt", name: "Bilt", partners: [{ program: "missing", ratio: 1, verified: true }] },
+      {
+        id: "bilt",
+        name: "Bilt",
+        sourceUrl: null,
+        checkedAt: "2026-11-01",
+        partners: [{ program: "missing", ratio: 1, verified: true }],
+      },
     ],
     aliases: {},
   };
 
   it("flags double alliance membership, unknown programs and unknown airlines", () => {
-    const report = validateCurated(base, new Set(["UA", "LH", "AA"]));
+    const report = validateCurated(
+      base,
+      new Set(["UA", "LH", "AA"]),
+      new Date("2026-11-13T00:00:00Z"),
+    );
     expect(report.errors).toContain("airline UA is in both star and oneworld");
     expect(report.errors).toContain("currency bilt: unknown program missing");
-    expect(report.warnings).toEqual(["program united: airline ZZ not in airlines table"]);
+    expect(report.warnings).toEqual([
+      "program united: airline ZZ not in airlines table",
+      "program united: partner list last checked 2026-01-01 (316 days ago)",
+    ]);
   });
 });

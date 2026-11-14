@@ -1,5 +1,5 @@
 {
-  "_comment": "Airline transfer partners only. ratio = miles per bank point. verified=false where public sources disagreed on 2026-11-13; confirm in the bank's app before transferring. Spirit removed 2026-11-13: Wikidata records Spirit Airlines as dissolved on 2026-05-02.",
+  "_comment": "Airline transfer partners only. ratio = miles per bank point. Amex verified on the official page 2026-11-13; Bilt's official page needs a login, so Bilt follows AwardWallet's 2026-10-20 partner table. AAdvantage left Bilt in June 2024; Spirit ceased operations 2026-05-02.",
   "currencies": [
     {
       "id": "bilt",
@@ -26,12 +26,6 @@
           "verified": true
         },
         {
-          "program": "aadvantage",
-          "ratio": 1,
-          "verified": false,
-          "notes": "Sources conflict on whether AAdvantage is still a Bilt partner."
-        },
-        {
           "program": "lifemiles",
           "ratio": 1,
           "verified": true
@@ -54,8 +48,7 @@
         {
           "program": "etihadguest",
           "ratio": 1,
-          "verified": false,
-          "notes": "Listed by some 2026 sources, missing from others."
+          "verified": true
         },
         {
           "program": "iberia",
@@ -70,8 +63,8 @@
         {
           "program": "trueblue",
           "ratio": 1,
-          "verified": false,
-          "notes": "Listed by some 2026 sources, missing from others."
+          "verified": true,
+          "notes": "Added 2026-10-20."
         },
         {
           "program": "qatar",
@@ -103,7 +96,9 @@
           "ratio": 1,
           "verified": true
         }
-      ]
+      ],
+      "checkedAt": "2026-11-13",
+      "sourceUrl": "https://awardwallet.com/news/bilt-rewards/jetblue-trueblue-transfer-partner"
     },
     {
       "id": "amex",
@@ -189,7 +184,9 @@
           "ratio": 1,
           "verified": true
         }
-      ]
+      ],
+      "checkedAt": "2026-11-13",
+      "sourceUrl": "https://global.americanexpress.com/rewards/transfer"
     }
   ]
 }

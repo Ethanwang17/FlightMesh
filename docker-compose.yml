@@ -1,0 +1,35 @@
+# FlightMesh on the homelab.
+#   docker compose up -d --build
+# Put your reverse proxy (TLS, domain) in front of the web service's port.
+services:
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - flightmesh-data:/data:ro
+    environment:
+      FLIGHTMESH_SNAPSHOT: /data/publish/snapshot.json
+
+  ingest:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      target: ingest
+    restart: unless-stopped
+    volumes:
+      - flightmesh-data:/data
+    # FLIGHTMESH_CONTACT (an email or URL) lifts Wikipedia's rate limit from 10 to 200 requests/min.
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      TZ: ${TZ:-UTC}
+
+volumes:
+  # Database, download cache, reports, snapshot history, backups and the published snapshot.
+  flightmesh-data:

@@ -1,0 +1,12 @@
+**/node_modules
+**/.next
+.git
+.env
+data/cache
+data/reports
+data/snapshots
+data/backups
+data/*.db
+data/*.db-*
+apps/web/public/data
+apps/web/public/vendor

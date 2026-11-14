@@ -43,16 +43,29 @@ export interface Route {
   seasonal: boolean;
 }
 
+/** A non-alliance partnership (or an exception to one). */
+export interface ProgramPartner {
+  airline: AirlineCode;
+  /** Miles can be spent on this airline's flights. Earn-only partners never make a route bookable. */
+  redeem: boolean;
+  earn: boolean;
+  /** "operated-only": bookable only on flights the airline operates itself, not its brands/subsidiaries. */
+  scope?: "operated-only";
+  notes?: string;
+}
+
 export interface Program {
   id: ProgramId;
   name: string;
   ownerAirline: AirlineCode;
-  /** If set, every member of this alliance is bookable with this program. */
-  allianceRule: AllianceId | null;
-  extraPartners: AirlineCode[];
-  excluded: AirlineCode[];
+  /** Alliance whose members are bookable, minus listed exceptions. */
+  alliance: { id: AllianceId; excludeMembers: AirlineCode[] } | null;
+  partners: ProgramPartner[];
   /** How sure the curated partner list is. "low" means check the program's own site. */
   confidence: "high" | "medium" | "low";
+  /** Where the partner list was checked, and when (yyyy-mm-dd). */
+  sourceUrl: string | null;
+  checkedAt: string;
   notes?: string;
 }
 
@@ -69,6 +82,8 @@ export interface Currency {
   id: CurrencyId;
   name: string;
   partners: TransferPartner[];
+  sourceUrl: string | null;
+  checkedAt: string;
 }
 
 /**
@@ -88,14 +103,3 @@ export const EMPTY_FILTERS: Filters = {
   alliances: [],
   airlines: [],
 };
-
-/** The data file the web app loads (shape finalized in Phase 4). */
-export interface Snapshot {
-  generatedAt: string;
-  airports: Airport[];
-  airlines: Airline[];
-  alliances: Alliance[];
-  programs: Program[];
-  currencies: Currency[];
-  routes: Route[];
-}

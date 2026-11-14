@@ -7,7 +7,7 @@ const HEADER =
 const csv = [
   HEADER,
   '2513,"EHAM","large_airport","Amsterdam Airport Schiphol",52.308601,4.76389,-11,"EU","NL","NL-NH","Amsterdam","yes","EHAM","AMS","EHAM",,,"https://en.wikipedia.org/wiki/Amsterdam_Airport_Schiphol",',
-  // Same IATA code, but no scheduled service: dropped.
+  // Same IATA code, but no scheduled service: loses to the scheduled Schiphol row.
   '334869,"MX-1202","small_airport","Las Americas Airport",25.59,-108.31,98,"NA","MX","MX-SIN","Guasave","no",,"AMS",,,,,',
   // Heliport with scheduled service: dropped.
   '1,"XHEL","heliport","Some Heliport",1,1,0,"EU","NL","NL-NH","X","yes",,"XHL",,,,,',
@@ -22,8 +22,9 @@ describe("selectAirports", () => {
   const airports = selectAirports(csv);
   const byCode = Object.fromEntries(airports.map((a) => [a.iata, a]));
 
-  it("keeps only scheduled, non-heliport airports with IATA codes", () => {
+  it("keeps non-heliport airports with IATA codes, scheduled or not", () => {
     expect(airports.map((a) => a.iata)).toEqual(["AMS", "DUP", "SEA"]);
+    expect(airports.every((a) => a.scheduled)).toBe(true);
   });
 
   it("keeps the scheduled Schiphol row for AMS", () => {

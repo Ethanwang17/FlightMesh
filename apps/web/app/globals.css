@@ -1,20 +1,36 @@
 :root {
   --bg: #f4f5f7;
-  --panel: rgba(255, 255, 255, 0.94);
+  --panel: rgba(255, 255, 255, 0.97);
   --text: #16181d;
   --muted: #5b6270;
   --border: rgba(20, 24, 32, 0.12);
+  --hover: rgba(31, 111, 235, 0.07);
   --accent: #1f6feb;
+  --chip: #eef1f5;
+  --warn: #9a6200;
+  --warn-bg: #fff4dd;
+  --star: #a77d10;
+  --oneworld: #b42846;
+  --skyteam: #1e64c8;
+  --none: #5a6478;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #0e1117;
-    --panel: rgba(22, 26, 34, 0.94);
+    --panel: rgba(22, 26, 34, 0.97);
     --text: #e6e8ec;
     --muted: #9aa3b2;
     --border: rgba(255, 255, 255, 0.12);
+    --hover: rgba(88, 166, 255, 0.1);
     --accent: #58a6ff;
+    --chip: #262c36;
+    --warn: #f2c66d;
+    --warn-bg: #3a2e12;
+    --star: #e0b84a;
+    --oneworld: #f07a92;
+    --skyteam: #6aa6ff;
+    --none: #a3adbf;
   }
 }
 
@@ -34,6 +50,14 @@ body {
     "Segoe UI",
     Roboto,
     sans-serif;
+  font-size: 14px;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
 }
 
 .app {
@@ -44,20 +68,39 @@ body {
 .map {
   position: absolute;
   inset: 0;
+  z-index: 0;
+  /* Keep MapLibre's and deck.gl's canvases in their own stacking context, under the sidebar. */
+  isolation: isolate;
 }
 
-.brand {
+.loading {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  color: var(--muted);
+}
+
+.sidebar {
   position: absolute;
   top: 12px;
   left: 12px;
-  z-index: 1;
-  padding: 8px 12px;
-  border-radius: 10px;
+  bottom: 12px;
+  width: 380px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  overflow-y: auto;
+  border-radius: 12px;
   background: var(--panel);
   border: 1px solid var(--border);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-  font-weight: 600;
-  letter-spacing: 0.01em;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.14);
+}
+
+.brand {
+  font-weight: 650;
+  font-size: 16px;
 }
 
 .brand span {
@@ -65,4 +108,322 @@ body {
   font-size: 12px;
   font-weight: 400;
   color: var(--muted);
+}
+
+.search {
+  position: relative;
+}
+
+.search input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.search.small {
+  flex: 1;
+  min-width: 120px;
+}
+
+.search.small input {
+  padding: 4px 8px;
+}
+
+.search-results {
+  position: absolute;
+  z-index: 3;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  border-radius: 8px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16);
+}
+
+.search-results button {
+  width: 100%;
+  text-align: left;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+}
+
+.search-results button:hover {
+  background: var(--hover);
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-label {
+  width: 64px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.chip {
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--chip);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.chip.on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.chip.alliance-star.on {
+  background: var(--star);
+  border-color: var(--star);
+}
+.chip.alliance-oneworld.on {
+  background: var(--oneworld);
+  border-color: var(--oneworld);
+}
+.chip.alliance-skyteam.on {
+  background: var(--skyteam);
+  border-color: var(--skyteam);
+}
+
+.programs summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.programs ul {
+  list-style: none;
+  margin: 4px 0 0 70px;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  width: 100%;
+}
+
+.programs label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+  cursor: pointer;
+}
+
+.programs label.via-currency {
+  font-weight: 600;
+}
+
+.link {
+  align-self: flex-start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.panel h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.panel h3 {
+  margin: 6px 0 0;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.panel-sub {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.panel-sub select {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 2px 4px;
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--chip);
+  cursor: pointer;
+}
+
+.muted {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.small {
+  font-size: 12px;
+}
+
+.note {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.intro p {
+  margin: 0;
+}
+
+.dest-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.dest-list > li > button,
+.itinerary {
+  width: 100%;
+  text-align: left;
+  padding: 7px 6px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.dest-list > li > button {
+  cursor: pointer;
+}
+
+.dest-list > li > button:hover {
+  background: var(--hover);
+}
+
+.dest-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dest-bottom,
+.leg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.airlines {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+
+.airline {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: #fff;
+  background: var(--none);
+}
+
+.airline.alliance-star {
+  background: var(--star);
+}
+.airline.alliance-oneworld {
+  background: var(--oneworld);
+}
+.airline.alliance-skyteam {
+  background: var(--skyteam);
+}
+
+.badge {
+  font-size: 11px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--chip);
+}
+
+.badge.warn {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+
+.bookable {
+  font-size: 11px;
+  color: var(--accent);
+}
+
+.attribution {
+  font-size: 11px;
+  color: var(--muted);
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+}
+
+.attribution a {
+  color: inherit;
+}
+
+@media (max-width: 720px) {
+  .sidebar {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    max-height: 58vh;
+    border-radius: 14px 14px 0 0;
+    padding: 12px 16px;
+  }
+
+  .brand span {
+    display: none;
+  }
 }

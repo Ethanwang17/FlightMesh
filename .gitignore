@@ -17,3 +17,5 @@ apps/web/public/data/
 
 # Copied from node_modules at dev/build time
 apps/web/public/vendor/
+data/snapshots/
+data/backups/

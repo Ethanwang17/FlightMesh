@@ -1,13 +1,10 @@
-import { WorldMap } from "@/components/WorldMap";
+import { Suspense } from "react";
+import { FlightMesh } from "@/components/FlightMesh";
 
 export default function Home() {
   return (
-    <main className="app">
-      <div className="brand">
-        FlightMesh
-        <span>Routes, alliances and points programs</span>
-      </div>
-      <WorldMap />
-    </main>
+    <Suspense fallback={<div className="loading">Loading…</div>}>
+      <FlightMesh />
+    </Suspense>
   );
 }

@@ -1,0 +1,3 @@
+# Weekly route refresh: Mondays 06:17 (container time, UTC unless TZ is set).
+# Incremental: only Wikipedia pages edited since the last run are downloaded.
+17 6 * * 1 cd /app && pnpm -s ingest refresh >> /data/reports/cron.log 2>&1
