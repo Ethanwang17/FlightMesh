@@ -46,12 +46,14 @@ export function FlightMesh() {
   const selected = indexOf(q.ap);
   const target = indexOf(q.to);
 
+  // With an airport open, clicking one of its destinations opens that route; otherwise a click
+  // selects the airport. Clicking the open airport itself does nothing.
   const onPick = useCallback(
-    (i: number | null, shift: boolean) => {
-      if (!s) return;
-      if (i === null) return;
+    (i: number | null) => {
+      if (!s || i === null) return;
       const code = s.airports.code[i]!;
-      if (shift && q.ap && code !== q.ap) void setQ({ to: code });
+      if (code === q.ap) return;
+      if (q.ap) void setQ({ to: code, all: false });
       else void setQ({ ap: code, to: null, all: false });
     },
     [s, q.ap, setQ],
@@ -71,6 +73,7 @@ export function FlightMesh() {
         routing={view?.routing ?? null}
         focus={focus}
         onPick={onPick}
+        onClear={() => void setQ({ ap: null, to: null, all: false })}
       />
       <Legend
         filtered={
@@ -131,8 +134,8 @@ export function FlightMesh() {
         ) : (
           <section className="panel intro">
             <p>
-              Click an airport to see where it flies nonstop. Shift-click a second airport (or
-              search for it) to see one-stop connections.
+              Click an airport to see where it flies nonstop. Then hover a destination to see its
+              name, and click it (or search for any airport) to see nonstop and one-stop options.
             </p>
             <p className="muted small">
               Filter by Bilt or Amex points, loyalty program, alliance or airline. &quot;Potentially

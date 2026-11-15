@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import type { MapboxOverlay } from "@deck.gl/mapbox";
 import type { Layer, PickingInfo } from "@deck.gl/core";
 import { RouteFlag, type RoutingResult, type Snapshot } from "@flightmesh/shared";
 import type { DestinationView } from "@/lib/protocol";
+import { airportLabel } from "./format";
 import { outlineOf, tierOf } from "./tiers";
 
 /** Free basemap with no API key. Can be swapped for self-hosted PMTiles later. */
@@ -21,6 +22,8 @@ export const ALLIANCE_COLORS: Record<string, RGBA> = {
   none: [90, 100, 120, 255],
 };
 const MIXED: RGBA = [20, 140, 120, 255];
+/** The hovered route, drawn on top of the others. */
+const HOVER_ROUTE: RGBA = [225, 29, 72, 255];
 const DIM_DOT: RGBA = [120, 130, 145, 70];
 const MAX_LABELS = 40;
 
@@ -42,6 +45,14 @@ export interface MapViewProps {
   /** Airport to fly to when it changes (e.g. picked in search). */
   focus: number | null;
   onPick: (airport: number | null, shift: boolean) => void;
+  /** Clear the selected airport (the × on its map label). */
+  onClear: () => void;
+}
+
+interface Hover {
+  airport: number;
+  x: number;
+  y: number;
 }
 
 function arcColor(s: Snapshot, routes: number[]): RGBA {
@@ -55,6 +66,10 @@ export function MapView(props: MapViewProps) {
   const overlayRef = useRef<MapboxOverlay | null>(null);
   const [layersModule, setLayersModule] = useState<typeof import("@deck.gl/layers") | null>(null);
   const shiftRef = useRef(false);
+  const [hover, setHover] = useState<Hover | null>(null);
+  const [mapInstance, setMapInstance] = useState<MapLibreMap | null>(null);
+  // Bumped while the map moves, so the HTML labels pinned to airports follow it.
+  const [, setMoveTick] = useState(0);
   const pickRef = useRef(props.onPick);
   useEffect(() => {
     pickRef.current = props.onPick;
@@ -84,6 +99,13 @@ export function MapView(props: MapViewProps) {
           interleaved: false,
           layers: [],
           getCursor: ({ isHovering }) => (isHovering ? "pointer" : "grab"),
+          onHover: (info: PickingInfo) => {
+            setHover(
+              info.layer?.id === "airports" && typeof info.object === "number"
+                ? { airport: info.object, x: info.x, y: info.y }
+                : null,
+            );
+          },
           onClick: (info: PickingInfo, event) => {
             if (info.layer?.id === "airports" && typeof info.object === "number") {
               const src = (event as { srcEvent?: MouseEvent } | undefined)?.srcEvent;
@@ -94,11 +116,18 @@ export function MapView(props: MapViewProps) {
           },
         });
         map.addControl(overlay);
+        let frame = 0;
+        map.on("movestart", () => setHover(null));
+        map.on("move", () => {
+          cancelAnimationFrame(frame);
+          frame = requestAnimationFrame(() => setMoveTick((t) => t + 1));
+        });
         mapRef.current = map;
         // Handy for debugging in the browser console; not shipped in production builds.
         if (process.env.NODE_ENV !== "production")
           (window as unknown as { __map: unknown }).__map = map;
         overlayRef.current = overlay;
+        setMapInstance(map);
         setLayersModule(layers);
       },
     );
@@ -157,17 +186,11 @@ export function MapView(props: MapViewProps) {
     });
   }, [props.selected, props.target, props.snapshot, layersModule]);
 
-  useEffect(() => {
-    const overlay = overlayRef.current;
-    if (!overlay || !layersModule) return;
-    const { ScatterplotLayer, ArcLayer, TextLayer } = layersModule;
+  // What the current view shows: the selection's arcs and airports, or the itinerary stops.
+  // Memoised so hovering only recolours layers instead of rebuilding ~9,000 dots.
+  const view = useMemo(() => {
     const s = props.snapshot;
-    const pos = (i: number): [number, number] => [s.airports.lon[i]!, s.airports.lat[i]!];
     const counts = props.counts;
-    const n = s.airports.code.length;
-    const ids = Array.from({ length: n }, (_, i) => i);
-
-    // Airports in the current view: the selection, its destinations, or the itinerary's stops.
     const highlighted = new Set<number>();
     const arcs: Arc[] = [];
     if (props.routing && props.selected !== null) {
@@ -199,15 +222,37 @@ export function MapView(props: MapViewProps) {
         });
       }
     }
-
-    const tier = (i: number) => tierOf(counts?.[i] ?? 0);
-    const isEnd = (i: number) => i === props.selected || i === props.target;
-    const focused = highlighted.size > 0;
+    const ids = Array.from({ length: s.airports.code.length }, (_, i) => i);
     // Draw small airports first so hubs sit on top.
-    const sorted = counts ? [...ids].sort((a, b) => counts[a]! - counts[b]!) : ids;
-    // With an airport (or route) open, show only the airports involved: the selection and its
-    // nonstop destinations, or the stops on the shown itineraries.
-    const ordered = focused ? sorted.filter((i) => highlighted.has(i)) : sorted;
+    const sorted = counts ? ids.sort((a, b) => counts[a]! - counts[b]!) : ids;
+    // With an airport (or route) open, show only the airports involved.
+    const airports = highlighted.size ? sorted.filter((i) => highlighted.has(i)) : sorted;
+    return { highlighted, arcs, airports };
+  }, [props.snapshot, props.counts, props.selected, props.destinations, props.routing]);
+
+  // Only a destination of the open airport (or any airport when none is open) gets the hover look.
+  const hovered =
+    hover && (view.highlighted.size === 0 || view.highlighted.has(hover.airport))
+      ? hover.airport
+      : null;
+  const hoveredRoute =
+    props.selected !== null && !props.routing && hovered !== props.selected ? hovered : null;
+
+  useEffect(() => {
+    const overlay = overlayRef.current;
+    if (!overlay || !layersModule) return;
+    const { ScatterplotLayer, ArcLayer, TextLayer } = layersModule;
+    const s = props.snapshot;
+    const pos = (i: number): [number, number] => [s.airports.lon[i]!, s.airports.lat[i]!];
+    const counts = props.counts;
+    const { highlighted, arcs, airports } = view;
+    const tier = (i: number) => tierOf(counts?.[i] ?? 0);
+    const isEnd = (i: number) => i === props.selected || i === props.target || i === hovered;
+    // While a route is hovered, the others step back.
+    const arcColorOf = (a: Arc): RGBA =>
+      hoveredRoute === null
+        ? a.color
+        : [a.color[0], a.color[1], a.color[2], Math.min(a.color[3], 60)];
 
     const layers: Layer[] = [
       new ArcLayer<Arc>({
@@ -216,14 +261,26 @@ export function MapView(props: MapViewProps) {
         greatCircle: true,
         getSourcePosition: (a) => pos(a.from),
         getTargetPosition: (a) => pos(a.to),
-        getSourceColor: (a) => a.color,
-        getTargetColor: (a) => a.color,
+        getSourceColor: arcColorOf,
+        getTargetColor: arcColorOf,
         getWidth: (a) => a.width,
+        widthUnits: "pixels",
+        updateTriggers: { getSourceColor: [hoveredRoute], getTargetColor: [hoveredRoute] },
+      }),
+      new ArcLayer<Arc>({
+        id: "hovered-route",
+        data: hoveredRoute === null ? [] : arcs.filter((a) => a.to === hoveredRoute),
+        greatCircle: true,
+        getSourcePosition: (a) => pos(a.from),
+        getTargetPosition: (a) => pos(a.to),
+        getSourceColor: HOVER_ROUTE,
+        getTargetColor: HOVER_ROUTE,
+        getWidth: 3.5,
         widthUnits: "pixels",
       }),
       new ScatterplotLayer<number>({
         id: "airports",
-        data: ordered,
+        data: airports,
         pickable: true,
         radiusUnits: "pixels",
         getPosition: pos,
@@ -243,22 +300,23 @@ export function MapView(props: MapViewProps) {
         lineWidthUnits: "pixels",
         getLineWidth: (i) => (isEnd(i) ? 2.5 : 1),
         updateTriggers: {
-          getRadius: [counts, props.selected, props.target],
-          getFillColor: [counts, props.selected, props.target, highlighted.size, arcs.length],
-          getLineColor: [counts, props.selected, props.target, highlighted.size, arcs.length],
-          getLineWidth: [props.selected, props.target],
+          getRadius: [counts, props.selected, props.target, hovered],
+          getFillColor: [counts],
+          getLineColor: [counts, props.selected, props.target, hovered],
+          getLineWidth: [props.selected, props.target, hovered],
         },
       }),
       new TextLayer<number>({
         id: "labels",
         // Label every stop only when there are few; a hub's 200+ codes would just overlap.
+        // The selected and hovered airports get HTML labels instead.
         data:
           highlighted.size <= MAX_LABELS
-            ? [...highlighted]
-            : [props.selected, props.target].filter((x) => x !== null),
+            ? [...highlighted].filter((i) => i !== props.selected && i !== hovered)
+            : [],
         getPosition: pos,
         getText: (i) => s.airports.code[i]!,
-        getSize: (i) => (i === props.selected || i === props.target ? 14 : 11),
+        getSize: 11,
         getColor: [20, 24, 32, 255],
         getPixelOffset: [0, -12],
         fontWeight: 600,
@@ -275,9 +333,45 @@ export function MapView(props: MapViewProps) {
     props.counts,
     props.selected,
     props.target,
-    props.destinations,
-    props.routing,
+    view,
+    hovered,
+    hoveredRoute,
   ]);
 
-  return <div ref={containerRef} className="map" aria-label="World map of airline routes" />;
+  // Screen position of an airport, for the HTML labels.
+  const at = (i: number) => {
+    const p = mapInstance?.project([
+      props.snapshot.airports.lon[i]!,
+      props.snapshot.airports.lat[i]!,
+    ]);
+    return p ? { left: p.x, top: p.y } : null;
+  };
+  const name = (i: number) =>
+    `${airportLabel(props.snapshot, i)} (${props.snapshot.airports.code[i]})`;
+  const originAt = props.selected !== null && layersModule ? at(props.selected) : null;
+  const hoverAt =
+    hovered !== null && hovered !== props.selected ? { left: hover!.x, top: hover!.y } : null;
+
+  return (
+    <div className="map-wrap">
+      <div ref={containerRef} className="map" aria-label="World map of airline routes" />
+      {originAt && props.selected !== null && (
+        <div className="map-chip origin" style={originAt}>
+          <span>{name(props.selected)}</span>
+          <button
+            type="button"
+            aria-label={`Clear ${props.snapshot.airports.code[props.selected]}`}
+            onClick={props.onClear}
+          >
+            ×
+          </button>
+        </div>
+      )}
+      {hoverAt && hovered !== null && (
+        <div className="map-chip hover" style={hoverAt} role="tooltip">
+          {name(hovered)}
+        </div>
+      )}
+    </div>
+  );
 }
