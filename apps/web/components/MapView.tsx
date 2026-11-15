@@ -204,7 +204,10 @@ export function MapView(props: MapViewProps) {
     const isEnd = (i: number) => i === props.selected || i === props.target;
     const focused = highlighted.size > 0;
     // Draw small airports first so hubs sit on top.
-    const ordered = counts ? [...ids].sort((a, b) => counts[a]! - counts[b]!) : ids;
+    const sorted = counts ? [...ids].sort((a, b) => counts[a]! - counts[b]!) : ids;
+    // With an airport (or route) open, show only the airports involved: the selection and its
+    // nonstop destinations, or the stops on the shown itineraries.
+    const ordered = focused ? sorted.filter((i) => highlighted.has(i)) : sorted;
 
     const layers: Layer[] = [
       new ArcLayer<Arc>({
@@ -228,16 +231,14 @@ export function MapView(props: MapViewProps) {
         getFillColor: (i) => {
           const t = tier(i);
           if (!t) return DIM_DOT;
-          // With an airport open, everything not on its routes fades but keeps its tier colour.
-          const alpha = !focused || highlighted.has(i) ? 255 : 70;
-          return [...t.color, alpha];
+          return [...t.color, 255];
         },
         stroked: true,
         getLineColor: (i) => {
           const t = tier(i);
           if (isEnd(i)) return [255, 255, 255, 255];
           if (!t) return [0, 0, 0, 0];
-          return [...outlineOf(t.color), !focused || highlighted.has(i) ? 230 : 60];
+          return [...outlineOf(t.color), 230];
         },
         lineWidthUnits: "pixels",
         getLineWidth: (i) => (isEnd(i) ? 2.5 : 1),
