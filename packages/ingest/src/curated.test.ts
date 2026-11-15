@@ -25,6 +25,9 @@ describe("curated data files", () => {
     expect(bilt).not.toContain("spirit");
     expect(bilt).toHaveLength(18);
     expect(data.currencies.find((c) => c.id === "amex")!.partners).toHaveLength(16);
+    const chase = data.currencies.find((c) => c.id === "chase")!.partners.map((p) => p.program);
+    expect(chase).toHaveLength(10);
+    expect(chase).not.toContain("skywards");
   });
 });
 

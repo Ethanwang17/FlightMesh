@@ -1,6 +1,6 @@
 # FlightMesh
 
-A personal world map of nonstop airline routes. Click an airport to see where it flies, filtered by airline, alliance, loyalty program or bank currency (Bilt / Amex). See [docs/PLAN.md](docs/PLAN.md) for the full plan.
+A personal world map of nonstop airline routes. Click an airport to see where it flies, filtered by airline, alliance, loyalty program or bank currency (Bilt / Amex / Chase). See [docs/PLAN.md](docs/PLAN.md) for the full plan.
 
 ## Setup
 

@@ -58,7 +58,7 @@ export function Filters({ snapshot: s, filters: f, onChange }: Props) {
             title={`${c.partners.length} airline transfer partners · checked ${c.checkedAt}`}
             onClick={() => onChange({ currencies: toggle(f.currencies, c.id as CurrencyId) })}
           >
-            {c.name.replace(" Membership Rewards", "").replace(" Rewards", "")}
+            {c.name.split(" ")[0]}
           </button>
         ))}
       </div>

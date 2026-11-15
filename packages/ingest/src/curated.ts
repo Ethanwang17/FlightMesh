@@ -54,7 +54,7 @@ const ProgramsFile = z.object({
 const CurrenciesFile = z.object({
   currencies: z.array(
     z.object({
-      id: z.enum(["bilt", "amex"]),
+      id: z.enum(["bilt", "amex", "chase"]),
       name: z.string(),
       partners: z.array(
         z.object({

@@ -138,9 +138,9 @@ export function FlightMesh() {
               name, and click it (or search for any airport) to see nonstop and one-stop options.
             </p>
             <p className="muted small">
-              Filter by Bilt or Amex points, loyalty program, alliance or airline. &quot;Potentially
-              bookable&quot; means the program partners with that airline; it doesn&apos;t mean
-              award seats are available.
+              Filter by Bilt, Amex or Chase points, loyalty program, alliance or airline.
+              &quot;Potentially bookable&quot; means the program partners with that airline; it
+              doesn&apos;t mean award seats are available.
             </p>
           </section>
         )}

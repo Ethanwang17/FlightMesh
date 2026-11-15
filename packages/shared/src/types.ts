@@ -4,7 +4,7 @@ export type AirportCode = string;
 export type AirlineCode = string;
 
 export type AllianceId = "star" | "oneworld" | "skyteam";
-export type CurrencyId = "bilt" | "amex";
+export type CurrencyId = "bilt" | "amex" | "chase";
 /** Slug for a loyalty program, e.g. "flyingblue". */
 export type ProgramId = string;
 

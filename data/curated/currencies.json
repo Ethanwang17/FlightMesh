@@ -1,5 +1,5 @@
 {
-  "_comment": "Airline transfer partners only. ratio = miles per bank point. Amex verified on the official page 2026-11-13; Bilt's official page needs a login, so Bilt follows AwardWallet's 2026-10-20 partner table. AAdvantage left Bilt in June 2024; Spirit ceased operations 2026-05-02.",
+  "_comment": "Airline transfer partners only. ratio = miles per bank point. Amex verified on the official page 2026-11-13; Bilt's official page needs a login, so Bilt follows AwardWallet's 2026-10-20 partner table. AAdvantage left Bilt in June 2024; Spirit ceased operations 2026-05-02. Chase (added 2026-11-14): 10 airline partners, all 1:1, per a partner list reviewed 2026-11-01; Emirates left Chase in October 2025.",
   "currencies": [
     {
       "id": "bilt",
@@ -187,6 +187,64 @@
       ],
       "checkedAt": "2026-11-13",
       "sourceUrl": "https://global.americanexpress.com/rewards/transfer"
+    },
+    {
+      "id": "chase",
+      "name": "Chase Ultimate Rewards",
+      "partners": [
+        {
+          "program": "aerclub",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "aeroplan",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "flyingblue",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "ba",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "iberia",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "trueblue",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "krisflyer",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "southwest",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "united",
+          "ratio": 1,
+          "verified": true
+        },
+        {
+          "program": "virginatlantic",
+          "ratio": 1,
+          "verified": true
+        }
+      ],
+      "sourceUrl": "https://thepointsking.com/blog/chase-transfer-partners/",
+      "checkedAt": "2026-11-14"
     }
   ]
 }

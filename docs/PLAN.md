@@ -4,7 +4,7 @@ _Revised 2026-11-13 after the data-source review in [DATA-SOURCES.md](DATA-SOURC
 
 ## Context
 
-FlightMesh is a personal take on flightconnections.com. It shows a world map with a dot for every airport. Clicking an airport draws its nonstop routes. You can filter by airline, alliance, loyalty program ("potentially bookable with points") and bank currency (Bilt / Amex). It runs on Ethan's homelab behind their own domain.
+FlightMesh is a personal take on flightconnections.com. It shows a world map with a dot for every airport. Clicking an airport draws its nonstop routes. You can filter by airline, alliance, loyalty program ("potentially bookable with points") and bank currency (Bilt / Amex / Chase). It runs on Ethan's homelab behind their own domain.
 
 **Decisions (unchanged)**
 
@@ -146,7 +146,7 @@ Section fetch via the Action API, the table parser (Seasonal/Charter markers, be
 
 ### 6. Filters + URL state (rev): done
 
-- Filter order: **Currency** (Bilt/Amex) → **Program** → **Alliance** → **Airline**. OR within a dimension, AND across dimensions.
+- Filter order: **Currency** (Bilt/Amex/Chase) → **Program** → **Alliance** → **Airline**. OR within a dimension, AND across dimensions.
 - Program resolution uses the new schema: owner + alliance members − `excludeMembers` + partners with `redeem: true`. Earn-only partners never count. A partner with `scope: "operated-only"` counts only for routes that airline operates itself, which is what Wikipedia lists anyway. Its brand aliases (e.g. a regional brand flying for it) are excluded, and the UI notes the restriction.
 - Every program shows `checkedAt` and its source link. The validator warns when `checkedAt` is more than 120 days old.
 - Wording: "potentially bookable with Flying Blue". Each program shows its confidence and `checkedAt`.
