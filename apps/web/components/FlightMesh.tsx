@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState } from "react";
 import type { AllianceId, CurrencyId, NetworkFilters } from "@flightmesh/shared";
 import { useSnapshot, useView } from "@/lib/useNetwork";
 import { Filters } from "./Filters";
+import { Legend } from "./Legend";
 import { MapView } from "./MapView";
 import { AirportPanel, RoutePanel } from "./Panels";
 import { AirportSearch } from "./Search";
@@ -70,6 +71,15 @@ export function FlightMesh() {
         routing={view?.routing ?? null}
         focus={focus}
         onPick={onPick}
+      />
+      <Legend
+        filtered={
+          filters.currencies.length +
+            filters.programs.length +
+            filters.alliances.length +
+            filters.airlines.length >
+          0
+        }
       />
       <aside className="sidebar">
         <div className="brand">

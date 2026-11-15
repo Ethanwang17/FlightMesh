@@ -6,6 +6,7 @@ import type { MapboxOverlay } from "@deck.gl/mapbox";
 import type { Layer, PickingInfo } from "@deck.gl/core";
 import { RouteFlag, type RoutingResult, type Snapshot } from "@flightmesh/shared";
 import type { DestinationView } from "@/lib/protocol";
+import { outlineOf, tierOf } from "./tiers";
 
 /** Free basemap with no API key. Can be swapped for self-hosted PMTiles later. */
 const BASEMAP_STYLE = "https://tiles.openfreemap.org/styles/positron";
@@ -20,7 +21,6 @@ export const ALLIANCE_COLORS: Record<string, RGBA> = {
   none: [90, 100, 120, 255],
 };
 const MIXED: RGBA = [20, 140, 120, 255];
-const ACCENT: RGBA = [31, 111, 235, 255];
 const DIM_DOT: RGBA = [120, 130, 145, 70];
 const MAX_LABELS = 40;
 
@@ -200,10 +200,11 @@ export function MapView(props: MapViewProps) {
       }
     }
 
-    const radius = (i: number) => {
-      const c = counts?.[i] ?? 0;
-      return c ? 2 + Math.sqrt(c) * 0.9 : 1.6;
-    };
+    const tier = (i: number) => tierOf(counts?.[i] ?? 0);
+    const isEnd = (i: number) => i === props.selected || i === props.target;
+    const focused = highlighted.size > 0;
+    // Draw small airports first so hubs sit on top.
+    const ordered = counts ? [...ids].sort((a, b) => counts[a]! - counts[b]!) : ids;
 
     const layers: Layer[] = [
       new ArcLayer<Arc>({
@@ -219,23 +220,31 @@ export function MapView(props: MapViewProps) {
       }),
       new ScatterplotLayer<number>({
         id: "airports",
-        data: ids,
+        data: ordered,
         pickable: true,
         radiusUnits: "pixels",
         getPosition: pos,
-        getRadius: (i) => (i === props.selected || i === props.target ? radius(i) + 3 : radius(i)),
+        getRadius: (i) => (tier(i)?.radius ?? 1.6) + (isEnd(i) ? 3 : 0),
         getFillColor: (i) => {
-          if (i === props.selected || i === props.target) return ACCENT;
-          if (highlighted.size && highlighted.has(i)) return [20, 24, 32, 230];
-          return counts && counts[i] ? [31, 111, 235, highlighted.size ? 90 : 170] : DIM_DOT;
+          const t = tier(i);
+          if (!t) return DIM_DOT;
+          // With an airport open, everything not on its routes fades but keeps its tier colour.
+          const alpha = !focused || highlighted.has(i) ? 255 : 70;
+          return [...t.color, alpha];
         },
         stroked: true,
-        getLineColor: [255, 255, 255, 200],
+        getLineColor: (i) => {
+          const t = tier(i);
+          if (isEnd(i)) return [255, 255, 255, 255];
+          if (!t) return [0, 0, 0, 0];
+          return [...outlineOf(t.color), !focused || highlighted.has(i) ? 230 : 60];
+        },
         lineWidthUnits: "pixels",
-        getLineWidth: (i) => (i === props.selected || i === props.target ? 2 : 0),
+        getLineWidth: (i) => (isEnd(i) ? 2.5 : 1),
         updateTriggers: {
           getRadius: [counts, props.selected, props.target],
           getFillColor: [counts, props.selected, props.target, highlighted.size, arcs.length],
+          getLineColor: [counts, props.selected, props.target, highlighted.size, arcs.length],
           getLineWidth: [props.selected, props.target],
         },
       }),
