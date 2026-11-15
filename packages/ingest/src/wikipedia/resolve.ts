@@ -27,7 +27,10 @@ export interface AirlineRef {
 
 const target = (title: string, l: Lookups) => l.redirects.get(title) ?? title;
 
-export function resolveAirline(title: string | null, text: string, l: Lookups): AirlineRef {
+export function resolveAirline(rawTitle: string | null, text: string, l: Lookups): AirlineRef {
+  // Some tables link a generic list ("List of airlines of Iran"), not the airline: use the text.
+  const isList = (t: string) => /^List of /i.test(t);
+  const title = rawTitle && !isList(rawTitle) && !isList(target(rawTitle, l)) ? rawTitle : null;
   if (title) {
     const t = target(title, l);
     const alias = l.aliases[title] ?? l.aliases[t];

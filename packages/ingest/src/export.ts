@@ -12,7 +12,14 @@ import type { DatabaseSync } from "node:sqlite";
 import { RouteFlag, type AllianceId, type Snapshot } from "@flightmesh/shared";
 import { loadCurated } from "./curated";
 import { ensureDir, paths, REPO_ROOT } from "./paths";
-import { checkPublish, countsOf, diffRoutes, type CheckResult } from "./publish";
+import {
+  applyRenames,
+  checkPublish,
+  countsOf,
+  diffRoutes,
+  renamedAirlines,
+  type CheckResult,
+} from "./publish";
 
 /** Published snapshots kept in data/snapshots (plus latest.json). */
 const KEEP_SNAPSHOTS = 8;
@@ -152,7 +159,8 @@ export function exportSnapshot(
   const prev = existsSync(latest) ? (JSON.parse(readFileSync(latest, "utf8")) as Snapshot) : null;
 
   const next = buildSnapshot(db, now);
-  const checks = checkPublish(prev ? countsOf(prev) : null, countsOf(next));
+  const renames = prev ? renamedAirlines(prev, next) : new Map<string, string>();
+  const checks = checkPublish(prev ? applyRenames(countsOf(prev), renames) : null, countsOf(next));
   const changes = diffRoutes(prev, next);
   const publish = checks.failures.length === 0 || !!opts.force;
 
@@ -187,6 +195,12 @@ export function exportSnapshot(
       ? `previous: routes ${prev.routes.o.length}, published ${prev.generatedAt}`
       : "previous: none (first publish)",
     "",
+    ...(renames.size
+      ? [
+          `Airlines re-identified (not counted as losses): ${[...renames].map(([a, b]) => `${a} → ${b}`).join(", ")}`,
+          "",
+        ]
+      : []),
     `Failures (${checks.failures.length})`,
     ...checks.failures.map((f) => `  - ${f}`),
     "",

@@ -150,8 +150,24 @@ export function openDb(file = paths.db): DatabaseSync {
     for (const { name } of tables) if (!KEEP_ON_UPGRADE.has(name)) db.exec(`DROP TABLE "${name}"`);
   }
   db.exec(SCHEMA);
+  addColumns(db);
   setMeta(db, "schema_version", String(SCHEMA_VERSION));
   return db;
+}
+
+/** Additive column changes that don't need a rebuild (old rows get the default). */
+function addColumns(db: DatabaseSync): void {
+  const want: [string, string, string][] = [
+    ["airline_status", "iata", "TEXT"],
+    ["airline_status", "icao", "TEXT"],
+    ["airline_status", "parsed_v", "INTEGER NOT NULL DEFAULT 1"],
+  ];
+  for (const [table, column, type] of want) {
+    const cols = (db.prepare(`PRAGMA table_info(${table})`).all() as { name: string }[]).map(
+      (c) => c.name,
+    );
+    if (!cols.includes(column)) db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${type}`);
+  }
 }
 
 export function getMeta(db: DatabaseSync, key: string): string | undefined {

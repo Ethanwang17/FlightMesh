@@ -93,6 +93,9 @@ describe("resolveAirline", () => {
       brand: false,
     });
     expect(resolveAirline(null, "Fly Oya", lookups).key).toBe("name:Fly Oya");
+    expect(resolveAirline("List of airlines of Iran", "Pars Air", lookups).key).toBe(
+      "name:Pars Air",
+    );
   });
 });
 

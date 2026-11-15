@@ -21,7 +21,7 @@ import {
   type Unresolved,
 } from "../wikipedia/resolve";
 import { pickDestinationsSection } from "../wikipedia/sections";
-import { refreshAirlineStatus } from "./airlineStatus";
+import { canAdoptCode, refreshAirlineStatus } from "./airlineStatus";
 
 const REDIRECT_TTL_MS = 30 * 24 * 60 * 60 * 1000;
 
@@ -373,6 +373,15 @@ export async function deriveRoutes(
       if (ref.title) airlineTitles.add(ref.title);
     }
   const defunctTitles = await refreshAirlineStatus(db, [...airlineTitles], today, log);
+  // Codes that airlines on current listings already fly under (via Wikidata or aliases).
+  const codesInUse = new Set<string>();
+  for (const p of pages)
+    for (const row of p.rows) {
+      const ref = resolveAirline(row.airlineTitle, row.airlineText, lookups);
+      if (ref.iata) codesInUse.add(ref.iata);
+    }
+  const infobox = infoboxCodeLookups(db, lookups, codesInUse);
+  lookups.airlineByTitle = infobox.airlineByTitle;
 
   const ov = loadOverrides();
   const overrides: Overrides = {
@@ -464,6 +473,23 @@ export async function deriveRoutes(
       "INSERT INTO unresolved (kind, title, text, count, example_page) VALUES (?, ?, ?, ?, ?)",
     );
     for (const u of aggregate(unresolved)) insert.run(u.kind, u.title, u.text, u.count, u.page);
+    for (const c of infobox.collisions)
+      insert.run(
+        "airline_code",
+        c.title,
+        `infobox IATA ${c.iata} is held by ${c.holder}`,
+        1,
+        c.iata,
+      );
+
+    // Upsert: a reassigned code takes over the row of the idle airline that held it.
+    const newAirline = db.prepare(`
+      INSERT INTO airlines (key, iata, icao, name, wikidata_id, wikipedia_title) VALUES (?, ?, ?, ?, NULL, ?)
+      ON CONFLICT(key) DO UPDATE SET icao = excluded.icao, name = excluded.name,
+        wikidata_id = NULL, wikipedia_title = excluded.wikipedia_title
+    `);
+    for (const [code, a] of infobox.newAirlines)
+      newAirline.run(code, code, a.icao, a.name, a.title);
   });
 
   return {
@@ -473,6 +499,53 @@ export async function deriveRoutes(
     charter,
     defunct,
   };
+}
+
+/**
+ * Extend title → IATA lookups with codes read from airline infoboxes, for airlines Wikidata has
+ * no code for. A code already held by a different airline is only taken when the names clearly
+ * belong together (see canAdoptCode); the rest are reported for a curated alias.
+ */
+function infoboxCodeLookups(db: DatabaseSync, lookups: Lookups, codesInUse: ReadonlySet<string>) {
+  const airlineByTitle = new Map(lookups.airlineByTitle);
+  const holder = new Map(
+    (
+      db
+        .prepare(
+          "SELECT iata, wikipedia_title FROM airlines WHERE iata IS NOT NULL AND key NOT LIKE '%:%'",
+        )
+        .all() as { iata: string; wikipedia_title: string | null }[]
+    )
+      // A code only counts as taken if its holder flies something in our data; otherwise the
+      // holder is usually a defunct airline Wikidata hasn't marked, and the code was reassigned.
+      .filter((r) => codesInUse.has(r.iata))
+      .map((r) => [r.iata, r.wikipedia_title ?? r.iata]),
+  );
+  const rows = db
+    .prepare(
+      "SELECT title, iata, icao FROM airline_status WHERE source = 'article' AND iata IS NOT NULL ORDER BY title",
+    )
+    .all() as { title: string; iata: string; icao: string | null }[];
+  const newAirlines = new Map<string, { name: string; icao: string | null; title: string }>();
+  const collisions: { title: string; iata: string; holder: string }[] = [];
+  for (const r of rows) {
+    if (airlineByTitle.has(r.title) || lookups.aliases[r.title]) continue;
+    const held = holder.get(r.iata);
+    if (!canAdoptCode(r.title, r.iata, held)) {
+      collisions.push({ title: r.title, iata: r.iata, holder: held! });
+      continue;
+    }
+    airlineByTitle.set(r.title, r.iata);
+    if (!held) {
+      holder.set(r.iata, r.title);
+      newAirlines.set(r.iata, {
+        name: r.title.replace(/\s*\(airline\)$/i, ""),
+        icao: r.icao,
+        title: r.title,
+      });
+    }
+  }
+  return { airlineByTitle, newAirlines, collisions };
 }
 
 function aggregate(items: Unresolved[]): (Unresolved & { count: number })[] {

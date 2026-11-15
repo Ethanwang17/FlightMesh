@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Snapshot } from "@flightmesh/shared";
-import { checkPublish, countsOf, diffRoutes } from "./publish";
+import { applyRenames, checkPublish, countsOf, diffRoutes, renamedAirlines } from "./publish";
 
 /** Snapshot from "AAA>BBB:XX" strings; airports get countries from a small table. */
 function snap(routes: string[], countries: Record<string, string> = {}): Snapshot {
@@ -12,7 +12,8 @@ function snap(routes: string[], countries: Record<string, string> = {}): Snapsho
   const d: number[] = [];
   const al: number[] = [];
   for (const r of routes) {
-    const [pair, airline] = r.split(":") as [string, string];
+    const cut = r.indexOf(":");
+    const [pair, airline] = [r.slice(0, cut), r.slice(cut + 1)];
     const [a, b] = pair.split(">") as [string, string];
     o.push(idx(airports, a));
     d.push(idx(airports, b));
@@ -114,5 +115,25 @@ describe("diffRoutes", () => {
   it("lists added and removed directed routes", () => {
     const c = diffRoutes(snap(["AAA>BBB:XX", "BBB>AAA:XX"]), snap(["AAA>BBB:XX", "AAA>CCC:XX"]));
     expect(c).toEqual({ added: ["AAA→CCC XX"], removed: ["BBB→AAA XX"] });
+  });
+});
+
+describe("renamedAirlines", () => {
+  it("treats an airline that reappears under a new key as a rename, not a loss", () => {
+    const base = Array.from({ length: 20 }, (_, k) =>
+      fan(`H${String(k).padStart(2, "0")}`, 50, `A${k}`, `X${k}`),
+    ).flat();
+    const prevSnap = snap([...base, ...fan("HKG", 44, "wiki:Greater Bay Airlines")]);
+    const nextSnap = snap([...base, ...fan("HKG", 44, "HB")]);
+    const renames = renamedAirlines(prevSnap, nextSnap);
+    expect([...renames]).toEqual([["wiki:Greater Bay Airlines", "HB"]]);
+    const r = checkPublish(applyRenames(countsOf(prevSnap), renames), countsOf(nextSnap));
+    expect(r.failures).toEqual([]);
+  });
+
+  it("does not call a real disappearance a rename", () => {
+    const prevSnap = snap([...fan("AAA", 50, "XX"), ...fan("BBB", 10, "YY", "B")]);
+    const nextSnap = snap([...fan("BBB", 10, "YY", "B"), ...fan("CCC", 50, "ZZ", "C")]);
+    expect(renamedAirlines(prevSnap, nextSnap).size).toBe(0);
   });
 });

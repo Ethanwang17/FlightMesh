@@ -125,6 +125,14 @@ export function writeRoutesReport(db: DatabaseSync): { text: string; file: strin
       ["count", "title", "text", "example_page"],
     ),
     "",
+    "Airline infobox codes not used because another airline holds the code (alias by hand if right)",
+    ...table(
+      all(
+        "SELECT title, text AS reason FROM unresolved WHERE kind = 'airline_code' ORDER BY title LIMIT 40",
+      ),
+      ["title", "reason"],
+    ),
+    "",
     "Top destination links that match no airport",
     ...table(
       all(

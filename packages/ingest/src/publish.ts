@@ -41,6 +41,50 @@ export function countsOf(s: Snapshot): Counts {
   return { routes: s.routes.o.length, airports: byAirport.size, byAirport, byAirline, byCountry };
 }
 
+/**
+ * Airlines that were re-identified between builds (e.g. `wiki:Greater Bay Airlines` became `HB`
+ * once its IATA code was known): an old key whose routes almost all reappear under one key that
+ * didn't exist before. Returned as old key → new key.
+ */
+export function renamedAirlines(prev: Snapshot, next: Snapshot): Map<string, string> {
+  const pairsBy = (s: Snapshot) => {
+    const m = new Map<string, Set<string>>();
+    for (const r of decodeRoutes(s)) {
+      const set = m.get(r.airline) ?? new Set<string>();
+      set.add(`${r.origin}>${r.dest}`);
+      m.set(r.airline, set);
+    }
+    return m;
+  };
+  const before = pairsBy(prev);
+  const after = pairsBy(next);
+  const out = new Map<string, string>();
+  for (const [oldKey, oldPairs] of before) {
+    if (after.has(oldKey)) continue;
+    for (const [newKey, newPairs] of after) {
+      if (before.has(newKey)) continue;
+      let shared = 0;
+      for (const p of oldPairs) if (newPairs.has(p)) shared++;
+      if (shared >= 0.9 * oldPairs.size) {
+        out.set(oldKey, newKey);
+        break;
+      }
+    }
+  }
+  return out;
+}
+
+/** Previous counts with renamed airlines moved to their new keys. */
+export function applyRenames(c: Counts, renames: ReadonlyMap<string, string>): Counts {
+  if (!renames.size) return c;
+  const byAirline = new Map<string, number>();
+  for (const [k, n] of c.byAirline) {
+    const key = renames.get(k) ?? k;
+    byAirline.set(key, (byAirline.get(key) ?? 0) + n);
+  }
+  return { ...c, byAirline };
+}
+
 export interface CheckResult {
   failures: string[];
   warnings: string[];

@@ -10,6 +10,86 @@ export interface Defunctness {
   ceased: string | null;
 }
 
+export interface AirlineCodes {
+  iata: string | null;
+  icao: string | null;
+}
+
+/** Bump when the article parsing changes, so cached articles are re-read once. */
+export const ARTICLE_PARSER_VERSION = 2;
+
+/**
+ * IATA and ICAO codes from an airline infobox's codes table (IATA | ICAO | Call sign headers,
+ * values in the next row). Wikidata lacks codes for many newer airlines; their articles have them.
+ */
+export function infoboxCodes(html: string): AirlineCodes {
+  const $ = cheerio.load(html);
+  $("sup").remove();
+  const table = $("table.infobox-airline-codes").first();
+  const out: AirlineCodes = { iata: null, icao: null };
+  if (!table.length) return out;
+  const headers = table
+    .find("tr")
+    .first()
+    .children("th")
+    .map((_, th) => $(th).text().trim().toUpperCase())
+    .get();
+  const values = table
+    .find("tr")
+    .eq(1)
+    .children("td")
+    .map((_, td) => $(td).text().trim().toUpperCase())
+    .get();
+  const iata = values[headers.indexOf("IATA")]?.match(/\b[A-Z0-9]{2}\b/)?.[0];
+  const icao = values[headers.indexOf("ICAO")]?.match(/\b[A-Z]{3}\b/)?.[0];
+  if (iata && /[A-Z]/.test(iata)) out.iata = iata;
+  if (icao) out.icao = icao;
+  return out;
+}
+
+const STOPWORDS = new Set([
+  "air",
+  "airline",
+  "airlines",
+  "airways",
+  "aviation",
+  "the",
+  "de",
+  "of",
+  "and",
+  "linhas",
+  "aereas",
+  "lineas",
+  "aerea",
+  "aereo",
+]);
+const words = (title: string) =>
+  new Set(
+    title
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/\(.*?\)/g, " ")
+      .split(/[^a-z0-9]+/)
+      .filter((w) => w.length > 1 && !STOPWORDS.has(w)),
+  );
+
+/**
+ * Whether an airline's own infobox code can be used for it. IATA codes get reused, so a code
+ * already held by a different airline is only accepted when the two clearly belong together
+ * (share a distinctive name word: "LATAM Chile" and "LATAM Airlines").
+ */
+export function canAdoptCode(
+  title: string,
+  iata: string,
+  holderTitle: string | undefined,
+): boolean {
+  if (!holderTitle) return true;
+  if (holderTitle === title) return true;
+  const a = words(title);
+  return [...words(holderTitle)].some((w) => a.has(w));
+}
+
 /**
  * Whether an airline article says the airline no longer flies:
  * - its infobox has a "Ceased operations" date that has passed, or
@@ -50,11 +130,10 @@ export async function refreshAirlineStatus(
 ): Promise<Set<string>> {
   const known = new Map(
     (
-      db.prepare("SELECT title, revid FROM airline_status WHERE source = 'article'").all() as {
-        title: string;
-        revid: number | null;
-      }[]
-    ).map((r) => [r.title, r.revid]),
+      db
+        .prepare("SELECT title, revid, parsed_v FROM airline_status WHERE source = 'article'")
+        .all() as { title: string; revid: number | null; parsed_v: number }[]
+    ).map((r) => [r.title, r.parsed_v >= ARTICLE_PARSER_VERSION ? r.revid : null]),
   );
   const revisions = await fetchLatestRevisions(titles);
   const changed = titles.filter((t) => {
@@ -65,10 +144,11 @@ export async function refreshAirlineStatus(
 
   const now = new Date().toISOString();
   const save = db.prepare(`
-    INSERT INTO airline_status (title, source, revid, defunct, ceased, checked_at)
-    VALUES (?, 'article', ?, ?, ?, ?)
+    INSERT INTO airline_status (title, source, revid, defunct, ceased, checked_at, iata, icao, parsed_v)
+    VALUES (?, 'article', ?, ?, ?, ?, ?, ?, ${ARTICLE_PARSER_VERSION})
     ON CONFLICT(title, source) DO UPDATE SET revid = excluded.revid, defunct = excluded.defunct,
-      ceased = excluded.ceased, checked_at = excluded.checked_at
+      ceased = excluded.ceased, checked_at = excluded.checked_at, iata = excluded.iata,
+      icao = excluded.icao, parsed_v = excluded.parsed_v
   `);
   for (const [i, title] of changed.entries()) {
     if (i && i % 50 === 0) log(`  airline articles ${i}/${changed.length}`);
@@ -77,7 +157,10 @@ export async function refreshAirlineStatus(
       const lead = await fetchArticleLead(rev.revid);
       if (!lead.ok) continue;
       const j = judgeAirline(lead.value, today);
-      tx(db, () => save.run(title, rev.revid, j.defunct ? 1 : 0, j.ceased, now));
+      const codes = infoboxCodes(lead.value.html);
+      tx(db, () =>
+        save.run(title, rev.revid, j.defunct ? 1 : 0, j.ceased, now, codes.iata, codes.icao),
+      );
     } catch (err) {
       log(`  airline status: ${title}: ${String(err)}`);
     }

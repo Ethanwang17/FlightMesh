@@ -18,20 +18,16 @@
           "earn": true
         },
         {
-          "airline": "VY",
-          "redeem": true,
-          "earn": true
-        },
-        {
-          "airline": "QR",
-          "redeem": true,
-          "earn": true
+          "airline": "UA",
+          "redeem": false,
+          "earn": true,
+          "notes": "Earn only: Aer Lingus and United partner for earning, not redemption."
         }
       ],
-      "confidence": "low",
-      "sourceUrl": null,
-      "checkedAt": "2026-11-13",
-      "notes": "Avios program; partner award coverage is narrower than BA's."
+      "confidence": "medium",
+      "sourceUrl": "https://upgradedpoints.com/travel/airlines/aer-lingus-aerclub-loyalty-program/",
+      "checkedAt": "2026-11-14",
+      "notes": "AerClub books Aer Lingus, British Airways and Iberia directly. Qatar, Finnair and Vueling need the Avios moved to their programs first."
     },
     {
       "id": "aeroplan",
@@ -121,9 +117,20 @@
           "earn": true
         },
         {
+          "airline": "TN",
+          "redeem": true,
+          "earn": true
+        },
+        {
           "airline": "DE",
           "redeem": true,
           "earn": true
+        },
+        {
+          "airline": "HU",
+          "redeem": true,
+          "earn": true,
+          "notes": "Some guides report Hainan award search temporarily suspended."
         },
         {
           "airline": "FI",
@@ -136,7 +143,7 @@
           "earn": true
         },
         {
-          "airline": "JX",
+          "airline": "PR",
           "redeem": true,
           "earn": true
         },
@@ -146,27 +153,20 @@
           "earn": true
         },
         {
-          "airline": "HU",
+          "airline": "JX",
           "redeem": true,
           "earn": true
         },
         {
-          "airline": "PR",
-          "redeem": false,
-          "earn": true,
-          "notes": "Earn-only since January 2026 (third-party report, unverified)."
-        },
-        {
           "airline": "AZ",
           "redeem": false,
-          "earn": true,
-          "notes": "Earn-only partner (third-party report, unverified)."
+          "earn": true
         }
       ],
-      "confidence": "low",
-      "sourceUrl": null,
-      "checkedAt": "2026-11-13",
-      "notes": "Singapore Airlines and LATAM are no longer partners (third-party reports)."
+      "confidence": "medium",
+      "sourceUrl": "https://en.wikipedia.org/wiki/Atmos_Rewards",
+      "checkedAt": "2026-11-14",
+      "notes": "Plus all oneworld members. Singapore Airlines ended September 2025; Emirates ended 2021. Earn-only partners include ITA Airways and several US regionals."
     },
     {
       "id": "lifemiles",
@@ -218,11 +218,47 @@
           "airline": "AC",
           "redeem": true,
           "earn": true
+        },
+        {
+          "airline": "NZ",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "OS",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "PG",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "LH",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "ZH",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "LX",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "CA",
+          "redeem": true,
+          "earn": true
         }
       ],
       "confidence": "low",
-      "sourceUrl": null,
-      "checkedAt": "2026-11-13"
+      "sourceUrl": "https://www.forbes.com/advisor/credit-cards/travel-rewards/cathay-pacific-asia-miles/",
+      "checkedAt": "2026-11-14",
+      "notes": "Plus all oneworld members. Third-party lists of non-oneworld partners disagree; several book only by phone or request form."
     },
     {
       "id": "skywards",
@@ -231,7 +267,12 @@
       "alliance": null,
       "partners": [
         {
-          "airline": "FZ",
+          "airline": "AC",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "JL",
           "redeem": true,
           "earn": true
         },
@@ -246,14 +287,60 @@
           "earn": true
         },
         {
-          "airline": "B6",
+          "airline": "CM",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "KE",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "TP",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "A3",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "AD",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "G3",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "MH",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "FZ",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "LS",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "U2",
           "redeem": true,
           "earn": true
         }
       ],
-      "confidence": "low",
-      "sourceUrl": null,
-      "checkedAt": "2026-11-13"
+      "confidence": "medium",
+      "sourceUrl": "https://upgradedpoints.com/travel/airlines/how-to-redeem-emirates-skywards-miles/",
+      "checkedAt": "2026-11-14",
+      "notes": "Distance-based partner chart (2026). Jet2 and easyJet are recent additions; some partners book only through Emirates live chat."
     },
     {
       "id": "etihadguest",
@@ -267,24 +354,83 @@
           "earn": true
         },
         {
-          "airline": "UX",
+          "airline": "NH",
           "redeem": true,
           "earn": true
         },
         {
-          "airline": "GA",
+          "airline": "AF",
           "redeem": true,
           "earn": true
         },
         {
-          "airline": "VN",
+          "airline": "KL",
           "redeem": true,
           "earn": true
+        },
+        {
+          "airline": "AC",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "B6",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "AT",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "UL",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "MH",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "SN",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "ET",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "G9",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "PG",
+          "redeem": true,
+          "earn": true,
+          "notes": "Added May 2026."
+        },
+        {
+          "airline": "JX",
+          "redeem": true,
+          "earn": true,
+          "notes": "Business and economy awards from August 2026."
+        },
+        {
+          "airline": "WY",
+          "redeem": false,
+          "earn": true,
+          "notes": "Oman Air redemptions reported temporarily unavailable."
         }
       ],
-      "confidence": "low",
-      "sourceUrl": null,
-      "checkedAt": "2026-11-13"
+      "confidence": "medium",
+      "sourceUrl": "https://awardfares.com/blog/etihad-guest-guide/",
+      "checkedAt": "2026-11-14",
+      "notes": "Air Serbia ended June 2026 and Virgin Australia June 2025. Some partners book only through the Etihad Guest call centre."
     },
     {
       "id": "iberia",
@@ -320,12 +466,12 @@
       },
       "partners": [
         {
-          "airline": "EK",
+          "airline": "AF",
           "redeem": true,
           "earn": true
         },
         {
-          "airline": "AF",
+          "airline": "PG",
           "redeem": true,
           "earn": true
         },
@@ -333,11 +479,34 @@
           "airline": "MU",
           "redeem": true,
           "earn": true
+        },
+        {
+          "airline": "EK",
+          "redeem": true,
+          "earn": true,
+          "notes": "No first class on Emirates with JMB."
+        },
+        {
+          "airline": "GA",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "KE",
+          "redeem": true,
+          "earn": true,
+          "notes": "Economy and business only."
+        },
+        {
+          "airline": "LA",
+          "redeem": true,
+          "earn": true
         }
       ],
-      "confidence": "low",
-      "sourceUrl": null,
-      "checkedAt": "2026-11-13"
+      "confidence": "medium",
+      "sourceUrl": "https://awardwallet.com/airlines/jal-mileage-bank/",
+      "checkedAt": "2026-11-14",
+      "notes": "Plus all oneworld members (JAL's own oneworld award page). Partner awards must be on a single partner carrier. JetBlue ended March 2026."
     },
     {
       "id": "trueblue",
@@ -348,13 +517,26 @@
         {
           "airline": "UA",
           "redeem": true,
-          "earn": true
+          "earn": true,
+          "notes": "Blue Sky partnership; United releases the award space."
+        },
+        {
+          "airline": "CI",
+          "redeem": true,
+          "earn": true,
+          "notes": "Redemptions from April 29, 2026."
+        },
+        {
+          "airline": "HA",
+          "redeem": false,
+          "earn": true,
+          "notes": "Earn only after June 2025."
         }
       ],
-      "confidence": "low",
-      "sourceUrl": null,
-      "checkedAt": "2026-11-13",
-      "notes": "UA via the Blue Sky partnership."
+      "confidence": "medium",
+      "sourceUrl": "https://ir.jetblue.com/news/news-details/2026/JetBlue-Adds-Redemption-Benefits-to-China-Airlines-Partnership/default.aspx",
+      "checkedAt": "2026-11-14",
+      "notes": "Japan Airlines redemptions ended March 31, 2026. Check jetblue.com/airline-partners for smaller partners."
     },
     {
       "id": "qatar",
@@ -470,12 +652,22 @@
           "earn": true
         },
         {
-          "airline": "SQ",
+          "airline": "SA",
           "redeem": true,
           "earn": true
         },
         {
-          "airline": "SA",
+          "airline": "VA",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "6E",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "LA",
           "redeem": true,
           "earn": true
         },
@@ -483,14 +675,14 @@
           "airline": "UX",
           "redeem": true,
           "earn": true,
-          "scope": "operated-only",
-          "notes": "\"Redemptions can only be made on Air Europa operated flights.\""
+          "notes": "\"Redemptions can only be made on Air Europa operated flights.\"",
+          "scope": "operated-only"
         }
       ],
-      "confidence": "low",
-      "sourceUrl": "https://flywith.virginatlantic.com/gb/en/flying-club/airline-partners/skyteam/air-europa.html",
-      "checkedAt": "2026-11-13",
-      "notes": "China Eastern awards historically unavailable (unverified for 2026). Not every SkyTeam member may be bookable."
+      "confidence": "medium",
+      "sourceUrl": "https://upgradedpoints.com/travel/airlines/how-to-redeem-virgin-atlantic-miles/",
+      "checkedAt": "2026-11-14",
+      "notes": "Plus SkyTeam ('SkyTeam and our extended flying family', virginatlantic.com). Singapore Airlines dropped (ended April 2025 per KrisFlyer sources). China Eastern awards historically unavailable (unverified for 2026)."
     },
     {
       "id": "aeromexico",
@@ -597,19 +789,31 @@
           "earn": true
         },
         {
-          "airline": "AS",
+          "airline": "VA",
+          "redeem": true,
+          "earn": true,
+          "notes": "Award chart effective 1 November 2025."
+        },
+        {
+          "airline": "MH",
           "redeem": true,
           "earn": true
         },
         {
-          "airline": "VA",
+          "airline": "GA",
+          "redeem": true,
+          "earn": true
+        },
+        {
+          "airline": "HO",
           "redeem": true,
           "earn": true
         }
       ],
-      "confidence": "low",
-      "sourceUrl": null,
-      "checkedAt": "2026-11-13"
+      "confidence": "medium",
+      "sourceUrl": "https://www.singaporeair.com/en_UK/us/ppsclub-krisflyer/use-miles/redeem-miles/award-tickets-on-partner-airlines/",
+      "checkedAt": "2026-11-14",
+      "notes": "Plus Star Alliance. Alaska Airlines status unclear in 2026 sources, so left out. Asiana redemptions end 16 December 2026. Non-alliance partners can't be combined on one ticket."
     }
   ]
 }
