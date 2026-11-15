@@ -92,8 +92,15 @@ export function MapView(props: MapViewProps) {
           zoom: 1.6,
           minZoom: 1,
           maxZoom: 12,
+          // Strictly 2D: no tilting or rotating, by mouse, touch or keyboard.
+          maxPitch: 0,
+          pitchWithRotate: false,
+          dragRotate: false,
+          touchPitch: false,
           attributionControl: { compact: true },
         });
+        map.touchZoomRotate.disableRotation();
+        map.keyboard.disableRotation();
         map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "bottom-right");
         const overlay = new MapboxOverlay({
           interleaved: false,
@@ -264,6 +271,8 @@ export function MapView(props: MapViewProps) {
         getSourceColor: arcColorOf,
         getTargetColor: arcColorOf,
         getWidth: (a) => a.width,
+        // Flat on the map: great-circle curves on the surface, not arcs rising off it.
+        getHeight: 0,
         widthUnits: "pixels",
         updateTriggers: { getSourceColor: [hoveredRoute], getTargetColor: [hoveredRoute] },
       }),
@@ -276,6 +285,7 @@ export function MapView(props: MapViewProps) {
         getSourceColor: HOVER_ROUTE,
         getTargetColor: HOVER_ROUTE,
         getWidth: 3.5,
+        getHeight: 0,
         widthUnits: "pixels",
       }),
       new ScatterplotLayer<number>({
